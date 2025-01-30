@@ -1,6 +1,7 @@
 import React, { useState} from 'react';
 import axios from 'axios';
 import  {useNavigate,Link } from 'react-router-dom';
+import  Header from '../components/Header'
 
 
 function Login() {
@@ -20,9 +21,15 @@ function Login() {
     try {
       const response = await axios.post('http://localhost:8000/loginuser', data);
       console.log(response.data);
-      if(response.data =='user login sucessfully'){
+      if(response.data.message =='user login sucessfully'){
+        let items={
+          username:response.data.username,
+          email:response.data.email,
+        }
+        localStorage.setItem('items', JSON.stringify(items));
         navigate('/dashboard')
-      }else if(response.data=='login failed'){
+      }
+      else if(response.data=='login failed'){
         setcheckcredential(true);
       }
     } catch (err) {
@@ -32,7 +39,7 @@ function Login() {
   };
 
   return (
-    <div className="container mt-4 ">
+    <div className="container">
       <form onSubmit={handleSubmit}>
         <h2>Login</h2>
         {error && <div className="alert alert-danger">{error}</div>}

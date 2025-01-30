@@ -24,11 +24,11 @@ const RegisterForm = () => {
       alert("Passwords do not match!");
       return;
     }
-    console.log(formData);
    let response= await axios.post('http://localhost:8000/registeruser',formData);
     if(response.data=='user is alerady exist'){
       setIsExist(true);
     }else{
+    console.log(response.data);
     navigate('/')
     }
   };
