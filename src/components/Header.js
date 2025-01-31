@@ -5,7 +5,9 @@ import { CiMail } from "react-icons/ci";
 import { FaLink } from "react-icons/fa6";
 import { FiFilePlus } from "react-icons/fi";
 import { Modal, Button, Form } from "react-bootstrap";
+import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
+
 
 function Header(props) {
   const [showTopicModal, setShowTopicModal] = useState(false);
@@ -15,13 +17,26 @@ function Header(props) {
   
   const [topicName, setTopicName] = useState("");
   const [topicVisibility, setTopicVisibility] = useState("public");
+  const [errorTopic, setErrorTopic]= useState("");
+  const navigate=useNavigate();
+  
+   const handlelogout=async()=>{
+      localStorage.clear();
+      navigate('/');
+      alert('Logout sucessfully')
+   }
 
   const handleCreateTopic = async () => {
     try {
       await axios.post('http://localhost:8000/topiccreate', { name: topicName, visibility: topicVisibility });
       setShowTopicModal(false);
+      setErrorTopic("");
     } catch (error) {
-      console.error("Error creating topic:", error);
+      if(error.response && error.response.status===409 || error.response.status===400){
+        setErrorTopic(error.response.data.message);
+      }else{
+        console.error("Topic Create Error",error);
+      }
     }
   };
 
@@ -60,11 +75,11 @@ function Header(props) {
                   <span className="fw-bold">{props.data}</span>
                 </button>
                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-                  <li><a className="dropdown-item" href="#">Profile</a></li>
-                  <li><a className="dropdown-item" href="#">Users</a></li>
-                  <li><a className="dropdown-item" href="#">Topics</a></li>
-                  <li><a className="dropdown-item" href="#">Posts</a></li>
-                  <li><a className="dropdown-item" href="#">Logout</a></li>
+                  <li><a className="dropdown-item" >Users</a></li>
+                  <li><a className="dropdown-item" >Profile</a></li>
+                  <li><a className="dropdown-item" >Posts</a></li>
+                  <li><a className="dropdown-item" >Topics</a></li>
+                <button onClick={handlelogout} className="border border-white" ><li className="dropdown-item" >LogOut</li></button>
                 </ul>
               </div>
             </div>
@@ -73,11 +88,12 @@ function Header(props) {
       </div>
 
       <Modal show={showTopicModal} onHide={() => setShowTopicModal(false)}>
-        <Modal.Header closeButton>
+        <Modal.Header closeButton onHide={()=>setErrorTopic('')}>
           <Modal.Title>Create New Topic</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Control type="text" placeholder="Enter Topic Name" className="mb-3" value={topicName} onChange={(e) => setTopicName(e.target.value)} />
+          <Form.Control type="text" placeholder="Enter Topic Name" className="mb-3" value={topicName} onChange={(e) => setTopicName(e.target.value)}  />
+             {errorTopic && <div className="text-danger mb-2">{errorTopic}</div>}
           <Form.Select value={topicVisibility} onChange={(e) => setTopicVisibility(e.target.value)}>
             <option value="public">Public</option>
             <option value="private">Private</option>

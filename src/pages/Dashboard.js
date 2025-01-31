@@ -1,16 +1,26 @@
-import React from 'react'
-import Header from '../components/Header'
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 
 function Dashboard() {
-  const user=localStorage.getItem("items");
-  const parseduser=JSON.parse(user);
-  const isshow=true;
-  return(
-    <div> 
+  const navigate = useNavigate();
+  const user = localStorage.getItem("items");
+  const parseduser = user ? JSON.parse(user) : null;
+  const isshow = true;
+
+  useEffect(() => {
+    if (!parseduser) {
+      navigate('/'); 
+    }
+  }, [parseduser, navigate]);
+
+  return (
+    <div>
       <div className="container">
-      <Header data={parseduser.username} show={isshow}/>
+        {parseduser ? <Header data={parseduser.username} show={isshow} /> : <p>Redirecting...</p>}
       </div>
     </div>
-  )
+  );
 }
-export default Dashboard
+
+export default Dashboard;

@@ -13,6 +13,7 @@ const RegisterForm = () => {
     confirmPassword: "",
   });
   const [isExist,setIsExist]= useState(false);
+  const[userRegister,setRegister]=useState(false);
   const navigate = useNavigate();  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,6 +29,7 @@ const RegisterForm = () => {
     if(response.data=='user is alerady exist'){
       setIsExist(true);
     }else{
+    setRegister(true);
     console.log(response.data);
     navigate('/')
     }
@@ -103,6 +105,9 @@ const RegisterForm = () => {
           />
         </Form.Group>
          
+        {userRegister && (
+          <div><span className=" bg-success text-white ">User Register sucessfully</span></div>
+         )}
          {isExist && (
           <div><span className=" bg-danger text-white ">User already Exist</span></div>
          )}

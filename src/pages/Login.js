@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
 import axios from 'axios';
 import  {useNavigate,Link } from 'react-router-dom';
-import  Header from '../components/Header'
+
 
 
 function Login() {
@@ -10,7 +10,11 @@ function Login() {
   const [error, setError] = useState(null);
   const [checkcredential,setcheckcredential]=useState(false);
   const navigate = useNavigate();
-
+ 
+   const handleforgot = async () => {
+     console.log("sjabjd000");
+     navigate('/forgotpassword');
+   }
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null); 
@@ -18,19 +22,25 @@ function Login() {
         email:email,
         password:password
      }
+     console.log("start handlesubmit")
     try {
       const response = await axios.post('http://localhost:8000/loginuser', data);
+      console.log(response)
       console.log(response.data);
+    
       if(response.data.message =='user login sucessfully'){
         let items={
           username:response.data.username,
           email:response.data.email,
+          token:response.data.token
         }
         localStorage.setItem('items', JSON.stringify(items));
         navigate('/dashboard')
       }
       else if(response.data=='login failed'){
         setcheckcredential(true);
+      }else if(response.data=='user is not exist'){
+        alert('user is not exist')
       }
     } catch (err) {
       console.error('Login Error:', err.response?.data || err.message);
@@ -72,12 +82,18 @@ function Login() {
         {checkcredential && (
           <div ><span className='bg-danger text-white'>wrong email or password</span></div>
         )}
-        <button type="submit" className="btn btn-primary">
+         <div className=' d-flex  gap-3'>
+         <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
           Login
+        </button>  
+        <button type="button" className="btn btn-primary" onClick={handleforgot}>
+          Forgot password
         </button>
+         </div>
       </form>
     </div>
   );
 }
 
 export default Login;
+
