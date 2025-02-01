@@ -27,11 +27,23 @@ function Header(props) {
    }
 
   const handleCreateTopic = async () => {
-    try {
-      await axios.post('http://localhost:8000/topiccreate', { name: topicName, visibility: topicVisibility });
+    const storedData = localStorage.getItem("token");
+    const { token } = storedData ? JSON.parse(storedData) : {};
+   
+    if (!token) {
+      alert("User is not authenticated.");
+      return;
+    }
+    try{
+      await axios.post('http://localhost:8000/topiccreate',{ name:topicName,visibility: topicVisibility}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
       setShowTopicModal(false);
       setErrorTopic("");
-    } catch (error) {
+    }catch (error){
       if(error.response && error.response.status===409 || error.response.status===400){
         setErrorTopic(error.response.data.message);
       }else{

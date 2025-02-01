@@ -22,19 +22,17 @@ function Login() {
         email:email,
         password:password
      }
-     console.log("start handlesubmit")
+
     try {
       const response = await axios.post('http://localhost:8000/loginuser', data);
-      console.log(response)
-      console.log(response.data);
+      
     
       if(response.data.message =='user login sucessfully'){
         let items={
           username:response.data.username,
-          email:response.data.email,
           token:response.data.token
         }
-        localStorage.setItem('items', JSON.stringify(items));
+        localStorage.setItem('token', JSON.stringify(items));
         navigate('/dashboard')
       }
       else if(response.data=='login failed'){

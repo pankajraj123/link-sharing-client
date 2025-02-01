@@ -21,7 +21,7 @@ function ResetPassword() {
         setLoading(true);
         setError('');
         setMessage('');
-
+      console.log("bsjhsbj")
         try {
             const response = await axios.post(`http://localhost:8000/resetPassword/${token}`, { newPassword });
             

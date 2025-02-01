@@ -4,10 +4,11 @@ import Header from '../components/Header';
 
 function Dashboard() {
   const navigate = useNavigate();
-  const user = localStorage.getItem("items");
+  const user = localStorage.getItem("token");
   const parseduser = user ? JSON.parse(user) : null;
   const isshow = true;
-
+  
+  
   useEffect(() => {
     if (!parseduser) {
       navigate('/'); 
