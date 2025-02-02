@@ -12,9 +12,10 @@ function Login() {
   const navigate = useNavigate();
  
    const handleforgot = async () => {
-     console.log("sjabjd000");
      navigate('/forgotpassword');
    }
+
+   
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null); 
