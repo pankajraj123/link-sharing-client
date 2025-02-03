@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import UserCard from '../components/UserCard';
 import TopicCard from '../components/TopicCard';
+import PublicTopic from '../components/PublicTopic'
 
 
 function Dashboard() {
@@ -26,12 +27,13 @@ function Dashboard() {
       </div>
       <div ClassName='container-fluid'>
         <div className='row'>
-          <div className='col col-6'>
+          <div className='col mx-4'>
             <h1>User</h1>
             <UserCard/>
+            <PublicTopic token={parseduser.token} username={parseduser.username}/>
           </div>
-          <div className='col col-6 '>
-            <h1> User Topic</h1>
+          <div className=' col-6 '>
+            <h1> Your Topic</h1>
             <div><TopicCard token={parseduser.token} username={parseduser.username}/></div>
           </div>
         </div>
