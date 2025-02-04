@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Card, Col, Row, Container } from 'react-bootstrap';
-import { CgProfile } from 'react-icons/cg';
+import { axiosInstance } from '../lib/axios';
 
 const UserCard = () => {
   const [username, setUsername] = useState('');
@@ -18,8 +17,8 @@ const UserCard = () => {
       setUsername(storedUsername);
 
 
-      axios
-        .get('http://localhost:8000/getTotalSubscription', {
+      axiosInstance
+        .get('getTotalSubscription', {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -29,8 +28,8 @@ const UserCard = () => {
           console.error('Error fetching total subscriptions:', error);
         });
 
-      axios
-        .get('http://localhost:8000/getUserTopic', {
+        axiosInstance
+        .get('getUserTopic', {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {

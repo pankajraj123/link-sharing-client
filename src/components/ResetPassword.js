@@ -1,50 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';  // Import useParams to get token from the URL
-import axios from 'axios';  // for making requests
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';  
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import Header from './Header';
+import { axiosInstance } from '../lib/axios';
+import Swal from 'sweetalert2';
 
 function ResetPassword() {
-    const [newPassword, setNewPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [message, setMessage] = useState('');
-    const { token } = useParams();  
+    const { token } = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        setError('');
-        setMessage('');
-    }, [token]);
+  
+    const formik = useFormik({
+        initialValues: {
+            newPassword: '',
+        },
+        validationSchema: Yup.object({
+            newPassword: Yup.string()
+                .required('Password is required'),
+        }),
+        onSubmit: async (values) => {
+            try {
+                const response = await axiosInstance.post(`resetPassword/${token}`, {
+                    newPassword: values.newPassword,
+                });
 
-    const handleResetPassword = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-        setMessage('');
-      console.log("bsjhsbj")
-        try {
-            const response = await axios.post(`http://localhost:8000/resetPassword/${token}`, { newPassword });
-            
-            if (response.status === 200) {
-                setMessage('Your password has been reset successfully.');
-                setTimeout(() => {
-                    navigate('/');  // Navigate to home page after successful reset
-                }, 2000);
+                if (response.status === 200) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Your password has been reset successfully.',
+                        timer: 2000,
+                    }).then(() => {
+                        navigate('/');
+                    });
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 400) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid or expired token',
+                        text: 'Please try again or request a new password reset.',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong',
+                        text: 'Please try again later.',
+                    });
+                }
             }
-        } catch (error) {
-            setLoading(false);
-            if (error.response && error.response.status === 400) {
-                setError('Invalid or expired token.');
-            } else {
-                setError('Something went wrong. Please try again.');
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
+        },
+    });
 
     const handleCancel = () => {
-        navigate('/');  
+        navigate('/');
     };
 
     return (
@@ -57,31 +67,32 @@ function ResetPassword() {
                 <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '450px' }}>
                     <h1 className="text-center mb-4">Reset Password</h1>
 
-                    {error && <div className="alert alert-danger">{error}</div>}
-
-                    {message && <div className="alert alert-success">{message}</div>}
-
-                    <form onSubmit={handleResetPassword}>
+                    <form onSubmit={formik.handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="newPassword" className="form-label">New Password</label>
                             <input
                                 type="password"
                                 id="newPassword"
                                 placeholder="Enter your new password"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
+                                name="newPassword"
+                                value={formik.values.newPassword}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                                 className="form-control"
                                 required
                             />
+                            {formik.touched.newPassword && formik.errors.newPassword && (
+                                <div className="text-danger">{formik.errors.newPassword}</div>
+                            )}
                         </div>
 
                         <div className="d-flex justify-content-between">
                             <button
                                 type="submit"
                                 className="btn btn-primary"
-                                disabled={loading}
+                                disabled={formik.isSubmitting}
                             >
-                                {loading ? 'Resetting...' : 'Reset Password'}
+                                {formik.isSubmitting ? 'Resetting...' : 'Reset Password'}
                             </button>
                             <button
                                 type="button"

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Card } from 'react-bootstrap';
+import { axiosInstance } from '../lib/axios';
 
 const TopicCard = ({ token, username }) => {
   const [topics, setTopics] = useState([]);
 
   useEffect(() => {
     if (token) {
-      axios
-        .get('http://localhost:8000/getUserTopic', {
+      axiosInstance
+        .get('getUserTopic', {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {

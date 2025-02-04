@@ -5,50 +5,63 @@ import { CiMail } from "react-icons/ci";
 import { FaLink } from "react-icons/fa6";
 import { FiFilePlus } from "react-icons/fi";
 import { Modal, Button, Form } from "react-bootstrap";
-import {useNavigate} from 'react-router-dom'
-import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
+import { axiosInstance } from "../lib/axios";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import Swal from "sweetalert2";
 
+const topicValidationSchema = Yup.object().shape({
+  name: Yup.string().required("Topic name is required."),
+  visibility: Yup.string().required("Visibility is required.")
+});
 
 function Header(props) {
   const [showTopicModal, setShowTopicModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showResourceModal, setShowResourceModal] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
-  
-  const [topicName, setTopicName] = useState("");
-  const [topicVisibility, setTopicVisibility] = useState("public");
-  const [errorTopic, setErrorTopic]= useState("");
-  const navigate=useNavigate();
-  
-   const handlelogout=async()=>{
-      localStorage.clear();
-      navigate('/');
-      alert('Logout sucessfully')
-   }
 
-  const handleCreateTopic = async () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    localStorage.clear();
+    navigate('/');
+    Swal.fire({
+      icon: 'success',
+      title: 'Logged out successfully',
+      showConfirmButton: false,
+      timer: 1500
+    });
+  };
+
+  const handleCreateTopic = async (values, { setSubmitting, setFieldError }) => {
     const storedData = localStorage.getItem("token");
     const { token } = storedData ? JSON.parse(storedData) : {};
-   
+
     if (!token) {
-      alert("User is not authenticated.");
+      Swal.fire("Error", "User is not authenticated", "error");
       return;
     }
-    try{
-      await axios.post('http://localhost:8000/topiccreate',{ name:topicName,visibility: topicVisibility}, {
+
+    try {
+      await axiosInstance.post('topiccreate', { name: values.name, visibility: values.visibility }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-    );
+      });
+
       setShowTopicModal(false);
-      setErrorTopic("");
-    }catch (error){
-      if(error.response && error.response.status===409 || error.response.status===400){
-        setErrorTopic(error.response.data.message);
-      }else{
-        console.error("Topic Create Error",error);
+      Swal.fire("Success", "Topic created successfully", "success");
+    } catch (error) {
+      if (error.response && (error.response.status === 409 || error.response.status === 400)) {
+        setFieldError("name", error.response.data.message);
+      } else {
+        Swal.fire("Error", "An error occurred while creating the topic.", "error");
+        console.error("Topic Create Error", error);
       }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -80,7 +93,6 @@ function Header(props) {
               <CiMail className="fs-4 text-dark cursor-pointer" onClick={() => setShowInviteModal(true)} />
               <FaLink className="fs-4 text-secondary cursor-pointer" onClick={() => setShowResourceModal(true)} />
               <FiFilePlus className="fs-4 text-secondary cursor-pointer" onClick={() => setShowDocumentModal(true)} />
-              
               <div className="dropdown">
                 <button className="btn d-flex align-items-center dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                   <CgProfile className="fs-4 me-2" />
@@ -91,7 +103,7 @@ function Header(props) {
                   <li><a className="dropdown-item" >Profile</a></li>
                   <li><a className="dropdown-item" >Posts</a></li>
                   <li><a className="dropdown-item" >Topics</a></li>
-                <button onClick={handlelogout} className="border border-white" ><li className="dropdown-item" >LogOut</li></button>
+                  <button onClick={handleLogout} className="border border-white" ><li className="dropdown-item" >LogOut</li></button>
                 </ul>
               </div>
             </div>
@@ -100,73 +112,49 @@ function Header(props) {
       </div>
 
       <Modal show={showTopicModal} onHide={() => setShowTopicModal(false)}>
-        <Modal.Header closeButton onHide={()=>setErrorTopic('')}>
+        <Modal.Header closeButton onHide={() => {}}>
           <Modal.Title>Create New Topic</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Control type="text" placeholder="Enter Topic Name" className="mb-3" value={topicName} onChange={(e) => setTopicName(e.target.value)}  />
-             {errorTopic && <div className="text-danger mb-2">{errorTopic}</div>}
-          <Form.Select value={topicVisibility} onChange={(e) => setTopicVisibility(e.target.value)}>
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-          </Form.Select>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowTopicModal(false)}>Cancel</Button>
-          <Button variant="primary" onClick={handleCreateTopic}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+          <Formik
+            initialValues={{ name: '', visibility: 'public' }}
+            validationSchema={topicValidationSchema}
+            onSubmit={handleCreateTopic}
+          >
+            {({ handleSubmit, handleChange, values, errors, touched, isSubmitting }) => (
+              <Form onSubmit={handleSubmit}>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Topic Name"
+                  className="mb-3"
+                  name="name"
+                  value={values.name}
+                  onChange={handleChange}
+                  isInvalid={touched.name && errors.name}
+                />
+                {errors.name && touched.name && <div className="text-danger mb-2">{errors.name}</div>}
+                
+                <Form.Select
+                  name="visibility"
+                  value={values.visibility}
+                  onChange={handleChange}
+                  isInvalid={touched.visibility && errors.visibility}
+                >
+                  <option value="public">Public</option>
+                  <option value="private">Private</option>
+                </Form.Select>
+                {errors.visibility && touched.visibility && <div className="text-danger mb-2">{errors.visibility}</div>}
 
-      <Modal show={showInviteModal} onHide={() => setShowInviteModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Send Invitation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Control type="email" placeholder="Enter Email" className="mb-3" />
-          <Form.Select>
-            <option>Select Topic</option>
-          </Form.Select>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={() => setShowTopicModal(false)}>Cancel</Button>
+                  <Button variant="primary" type="submit" disabled={isSubmitting}>Save</Button>
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowInviteModal(false)}>Cancel</Button>
-          <Button variant="primary">Send</Button>
-        </Modal.Footer>
       </Modal>
-
-      <Modal show={showResourceModal} onHide={() => setShowResourceModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Share Resource</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Control type="text" placeholder="Enter Link" className="mb-3" />
-          <Form.Control type="text" placeholder="Enter Description" className="mb-3" />
-          <Form.Select>
-            <option>Select Topic</option>
-          </Form.Select>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowResourceModal(false)}>Cancel</Button>
-          <Button variant="primary">Share</Button>
-        </Modal.Footer>
-      </Modal>
-
- 
-      <Modal show={showDocumentModal} onHide={() => setShowDocumentModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Share Document</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Control type="file" className="mb-3" />
-          <Form.Control type="text" placeholder="Enter Description" className="mb-3" />
-          <Form.Select>
-            <option>Select Topic</option>
-          </Form.Select>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDocumentModal(false)}>Cancel</Button>
-          <Button variant="primary">Share</Button>
-        </Modal.Footer>
-      </Modal>
+      
     </nav>
   );
 }
