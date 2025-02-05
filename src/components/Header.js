@@ -68,7 +68,7 @@ function Header(props) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-3">
       <div className="container-fluid">
-        <a className="navbar-brand fw-bold" href="#">LinkSharing</a>
+        <h2>link-sharing</h2>
         <button
           className="navbar-toggler"
           type="button"

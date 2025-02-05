@@ -6,13 +6,13 @@ import TopicCard from '../components/TopicCard';
 import PublicTopic from '../components/PublicTopic'
 
 
-function Dashboard() {
+function Dashboard(){
   const navigate = useNavigate();
   const user = localStorage.getItem("token");
   const parseduser = user ? JSON.parse(user) : null;
   const isshow = true;
   
-  
+
   useEffect(() =>{
     if (!parseduser) {
       navigate('/'); 

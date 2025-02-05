@@ -12,8 +12,7 @@ const TopicCard = ({ token, username }) => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          console.log(response.data.topic);
-          setTopics(response.data.topic); 
+        setTopics(response.data.topic); 
         })
         .catch((error) => {
           console.error('Error fetching topics:', error);
@@ -21,6 +20,7 @@ const TopicCard = ({ token, username }) => {
     }
   }, [token]);
 
+  
   return (
     <div>
       {topics.length > 0 ? (
@@ -32,6 +32,10 @@ const TopicCard = ({ token, username }) => {
               <p><strong>Created By:</strong> {username}</p>
               <p><strong>Date Created:</strong> {new Date(topic.dateCreated).toLocaleDateString()}</p>
             </Card.Body>
+            {/* <div className='d-flex gap-2'>
+            <button className='btn btn-primary'> Edit</button>
+            <button className='btn btn-primary'>Delete</button>
+            </div> */}
           </Card>
         ))
       ) : (
@@ -42,3 +46,6 @@ const TopicCard = ({ token, username }) => {
 };
 
 export default TopicCard;
+
+
+//  in this  you used formik  yup and sweetalert2   and when user click on edit it show modal  i give you api for delete and update 

@@ -1,85 +1,118 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { axiosInstance } from "../lib/axios";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 
 const PublicTopic = ({ token, username }) => {
     const [topics, setTopics] = useState([]);
-    const [seriousness, setSeriousness] = useState('Casual');
     const [subscriptions, setSubscriptions] = useState({});
 
-
     useEffect(() => {
-        if (token) {
+        if (token) {           // Fetch topics and user subscriptions
             axiosInstance
                 .get('getPublicTopic', {
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then((response) => {
                     setTopics(response.data.topic);
-                    console.log(response.data)
                 })
                 .catch((error) => {
                     console.error('Error fetching topics:', error);
                 });
 
- 
-                axiosInstance
+            axiosInstance
                 .get('getUserSubscriptions', {
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then((response) => {
-                    const userSubscriptions = response.data.reduce((acc, subscription) => {
+                    const userSubscriptions = response.data.userSubscriptions.reduce((acc, subscription) => {
                         acc[subscription.topicId] = subscription.seriousness;
                         return acc;
                     }, {});
-                    console.log(response.data)
-                    console.log(userSubscriptions);
-                    setSubscriptions(userSubscriptions); 
+                    setSubscriptions(userSubscriptions);
                 })
                 .catch((error) => {
                     console.error('Error fetching user subscriptions:', error);
                 });
         }
-    },[]);
+    }, [token]);
+
+    // Formik form setup for seriousness
+    const formik = useFormik({
+        initialValues: {
+            seriousness: 'Casual',
+        },
+        validationSchema: Yup.object({
+            seriousness: Yup.string()
+                .oneOf(['Casual', 'Serious', 'Very Serious'], 'Invalid seriousness level')
+                .required('Seriousness is required'),
+        }),
+        onSubmit: async (values)=>{
+            Swal.fire({
+                icon: 'success',
+                title: 'Form Submitted!',
+                text: `Seriousness: ${values.seriousness}`,
+            });
+        },
+    });
 
     const handleSubscribe = async (topicId) => {
         try {
             const response = await axiosInstance.post(
                 `subscribe/${topicId}`,
-                { seriousness },
+                { seriousness: formik.values.seriousness },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
             setSubscriptions((prevSubscriptions) => ({
                 ...prevSubscriptions,
-                [topicId]: seriousness, 
+                [topicId]: formik.values.seriousness,
             }));
+            Swal.fire({
+                icon: 'success',
+                title: 'Subscribed!',
+                text: `You have subscribed  with seriousness level: ${formik.values.seriousness}`,
+            });
         } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'There was an error subscribing to the topic.',
+            });
             console.error('Error subscribing to topic:', error);
         }
     };
 
     const handleUnsubscribe = async (topicId) => {
         try {
-            const response = await axiosInstance.delete(
-                `unsubscribe/${topicId}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
+            await axiosInstance.delete(`unsubscribe/${topicId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             setSubscriptions((prevSubscriptions) => {
                 const newSubscriptions = { ...prevSubscriptions };
-                delete newSubscriptions[topicId]; 
+                delete newSubscriptions[topicId];
                 return newSubscriptions;
             });
+            Swal.fire({
+                icon: 'info',
+                title: 'Unsubscribed',
+                text: `You have unsubscribed from the topic.`,
+            });
         } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'There was an error unsubscribing from the topic.',
+            });
             console.error('Error unsubscribing from topic:', error);
         }
     };
 
     const isSubscribed = (topicId) => {
-        return subscriptions.hasOwnProperty(topicId); 
+        return subscriptions.hasOwnProperty(topicId);
     };
 
     return (
@@ -114,16 +147,26 @@ const PublicTopic = ({ token, username }) => {
                                         >
                                             Subscribe
                                         </button>
-                                        <select
-                                            className="form-select"
-                                            aria-label="Seriousness select"
-                                            value={seriousness}
-                                            onChange={(e) => setSeriousness(e.target.value)}
-                                        >
-                                            <option value="Casual">Casual</option>
-                                            <option value="Serious">Serious</option>
-                                            <option value="Very Serious">Very Serious</option>
-                                        </select>
+                                        <form onSubmit={formik.handleSubmit}>
+                                            <select
+                                                className="form-select"
+                                                aria-label="Seriousness select"
+                                                value={formik.values.seriousness}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+                                                name="seriousness"
+                                            >
+                                                <option value="Casual">Casual</option>
+                                                <option value="Serious">Serious</option>
+                                                <option value="Very Serious">Very Serious</option>
+                                            </select>
+                                            {formik.touched.seriousness && formik.errors.seriousness && (
+                                                <div className="text-danger">{formik.errors.seriousness}</div>
+                                            )}
+                                            <button type="submit" className="btn btn-success mt-2">
+                                                Save Seriousness
+                                            </button>
+                                        </form>
                                     </>
                                 )}
                             </div>
