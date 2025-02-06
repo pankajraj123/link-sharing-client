@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,} from 'react';
 import { Card } from 'react-bootstrap';
 import { axiosInstance } from '../lib/axios';
+import {useNavigate } from 'react-router-dom';
+
 
 const TopicCard = ({ token, username }) => {
   const [topics, setTopics] = useState([]);
+
+  const navigate=useNavigate();
+  const handleClick = (topicname, topicId) => {
+    localStorage.setItem('topicId', topicId);
+    const formattedTopicName = topicname.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/dashboard/topicDescription/${formattedTopicName}`);
+};
 
   useEffect(() => {
     if (token) {
@@ -32,10 +41,12 @@ const TopicCard = ({ token, username }) => {
               <p><strong>Created By:</strong> {username}</p>
               <p><strong>Date Created:</strong> {new Date(topic.dateCreated).toLocaleDateString()}</p>
             </Card.Body>
-            {/* <div className='d-flex gap-2'>
-            <button className='btn btn-primary'> Edit</button>
-            <button className='btn btn-primary'>Delete</button>
-            </div> */}
+            <div className='d-flex '>
+             {/* <Link to={`/dashboard/topicDescription/${topic._id}` }>readMore</Link> */}
+             <button className='btn-primary' onClick={()=>{handleClick(topic.name,topic._id)}}>
+               readMore
+             </button>
+            </div>
           </Card>
         ))
       ) : (
@@ -48,4 +59,4 @@ const TopicCard = ({ token, username }) => {
 export default TopicCard;
 
 
-//  in this  you used formik  yup and sweetalert2   and when user click on edit it show modal  i give you api for delete and update 
+

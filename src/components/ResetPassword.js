@@ -10,7 +10,6 @@ function ResetPassword() {
     const { token } = useParams();
     const navigate = useNavigate();
 
-  
     const formik = useFormik({
         initialValues: {
             newPassword: '',
@@ -24,7 +23,6 @@ function ResetPassword() {
                 const response = await axiosInstance.post(`resetPassword/${token}`, {
                     newPassword: values.newPassword,
                 });
-
                 if (response.status === 200) {
                     Swal.fire({
                         icon: 'success',

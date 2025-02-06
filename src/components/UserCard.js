@@ -15,8 +15,6 @@ const UserCard = () => {
   useEffect(() => {
     if (token && storedUsername) {
       setUsername(storedUsername);
-
-
       axiosInstance
         .get('getTotalSubscription', {
           headers: { Authorization: `Bearer ${token}` },
@@ -47,7 +45,7 @@ const UserCard = () => {
         <Col md={8}> 
           <Card className="shadow-lg p-4 rounded-lg" style={{ width: '100%' }}> 
             <Card.Body>
-            
+
               <div className="d-flex align-items-center">
            
                 <div className="mr-4">

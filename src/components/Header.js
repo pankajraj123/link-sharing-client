@@ -4,7 +4,7 @@ import { TbMessageCircleFilled } from "react-icons/tb";
 import { CiMail } from "react-icons/ci";
 import { FaLink } from "react-icons/fa6";
 import { FiFilePlus } from "react-icons/fi";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Tooltip, OverlayTrigger } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from "../lib/axios";
 import { Formik } from "formik";
@@ -89,7 +89,16 @@ function Header(props) {
 
           {props.show && (
             <div className="d-flex align-items-center gap-3 ms-3">
-              <TbMessageCircleFilled className="fs-4 text-dark cursor-pointer" onClick={() => setShowTopicModal(true)} />
+              <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="create-topic-tooltip">Create Topic</Tooltip>}
+              >
+                <TbMessageCircleFilled
+                  className="fs-4 text-dark cursor-pointer"
+                  onClick={() => setShowTopicModal(true)}
+                />
+              </OverlayTrigger>
+
               <CiMail className="fs-4 text-dark cursor-pointer" onClick={() => setShowInviteModal(true)} />
               <FaLink className="fs-4 text-secondary cursor-pointer" onClick={() => setShowResourceModal(true)} />
               <FiFilePlus className="fs-4 text-secondary cursor-pointer" onClick={() => setShowDocumentModal(true)} />
@@ -112,7 +121,7 @@ function Header(props) {
       </div>
 
       <Modal show={showTopicModal} onHide={() => setShowTopicModal(false)}>
-        <Modal.Header closeButton onHide={() => {}}>
+        <Modal.Header closeButton>
           <Modal.Title>Create New Topic</Modal.Title>
         </Modal.Header>
         <Modal.Body>
