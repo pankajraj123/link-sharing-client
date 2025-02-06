@@ -10,7 +10,7 @@ export default function Home() {
         <Header/>
         </div>
   <div className="col-6">
-    First Coloum
+    First Coloumn
     </div> 
   <div className="col-6">
     <div className="mb-4 ">

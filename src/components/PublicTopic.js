@@ -10,7 +10,7 @@ const PublicTopic = ({ token, username }) => {
     const [subscriptions, setSubscriptions] = useState({});
 
     useEffect(() => {
-        if (token) {           // Fetch topics and user subscriptions
+        if (token) {           
             axiosInstance
                 .get('getPublicTopic', {
                     headers: { Authorization: `Bearer ${token}` },
@@ -39,7 +39,6 @@ const PublicTopic = ({ token, username }) => {
         }
     }, [token]);
 
-    // Formik form setup for seriousness
     const formik = useFormik({
         initialValues: {
             seriousness: 'Casual',
@@ -49,7 +48,7 @@ const PublicTopic = ({ token, username }) => {
                 .oneOf(['Casual', 'Serious', 'Very Serious'], 'Invalid seriousness level')
                 .required('Seriousness is required'),
         }),
-        onSubmit: async (values)=>{
+        onSubmit: async (values) =>{
             Swal.fire({
                 icon: 'success',
                 title: 'Form Submitted!',

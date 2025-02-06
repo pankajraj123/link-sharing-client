@@ -22,17 +22,17 @@ function Dashboard(){
 
   return (
     <div>
-      <div className="container">
+      <div className="container-fluid">
         {parseduser ? <Header data={parseduser.username} show={isshow} /> : <p>Redirecting...</p>}
       </div>
-      <div ClassName='container-fluid'>
+      <div ClassName='container'>
         <div className='row'>
-          <div className='col mx-4'>
+          <div className='col mx-4 mt-4'>
             <h1>User</h1>
             <UserCard/>
             <PublicTopic token={parseduser.token} username={parseduser.username}/>
           </div>
-          <div className=' col-6 '>
+          <div className=' col-6 mt-4'>
             <h1> Your Topic</h1>
             <div><TopicCard token={parseduser.token} username={parseduser.username}/></div>
           </div>
