@@ -1,19 +1,18 @@
-import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import {Routes,Route,BrowserRouter} from 'react-router-dom';
+import {Routes,Route} from 'react-router-dom';
+import Home from "./pages/Home";
+import Forgot from "./components/Forgot";
+import ResetPassword from "./components/ResetPassword";
 
 
 function App() {
   return (
     <>
-     <div className="container ">
-      <Header/>
-      </div>
        <Routes>
-        <Route path='/' element={<Login/>}></Route>
+        <Route path='/' element={<Home/>}></Route>
         <Route path='/dashboard' element={<Dashboard/>}></Route>
+        <Route path='/forgotpassword' element={<Forgot/>}></Route>
+        <Route path='/resetPassword/:token' element={<ResetPassword/>}></Route>
        </Routes>
     </>
   );
@@ -21,8 +20,3 @@ function App() {
 
 export default App;
 
-{/* <div className="row flex-grow-1 align-items-center justify-content-end">
-        <div className="col-md-4">
-          <Login/>  
-        </div>
-      </div> */}
