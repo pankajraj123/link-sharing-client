@@ -1,7 +1,6 @@
 // redux/actions/topicActions.js
-import { SET_TOPICS, SET_LOADING, SET_ERROR } from '../types';
+import { SET_TOPICS, SET_LOADING, SET_ERROR } from '../types/topicType';
 import { getTopics } from '../apiCalls/ topicApi'; 
-
 
 export const fetchTopics = (token) => async (dispatch) => {
   try {
@@ -15,7 +14,6 @@ export const fetchTopics = (token) => async (dispatch) => {
   }
 };
 
-
 export const setTopics = (topics) => ({
   type: SET_TOPICS,
   payload: topics,  
@@ -25,7 +23,6 @@ export const setLoading = (loading) => ({
   type: SET_LOADING,
   payload: loading, 
 });
-
 export const setError = (error) => ({
   type: SET_ERROR,
   payload: error,

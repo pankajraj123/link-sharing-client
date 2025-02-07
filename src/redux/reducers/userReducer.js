@@ -1,5 +1,4 @@
-// redux/reducers/userReducer.js
-import { SET_USER_DATA, FETCH_USER_DATA_START, FETCH_USER_DATA_SUCCESS, FETCH_USER_DATA_FAILURE } from '../types';
+import { SET_USER_DATA, FETCH_USER_DATA_START, FETCH_USER_DATA_SUCCESS, FETCH_USER_DATA_FAILURE } from '../types/userType';
 
 const initialState = {
   username: '',

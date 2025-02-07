@@ -10,6 +10,10 @@ import { axiosInstance } from "../lib/axios";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
+ import { useDispatch } from "react-redux";
+import { fetchTopics } from "../redux/actions/topicActions";
+import { fetchPublicTopic } from "../redux/actions/publicTopicActions";
+import { fetchUserData } from "../redux/actions/userActions";
 
 const topicValidationSchema = Yup.object().shape({
   name: Yup.string().required("Topic name is required."),
@@ -21,6 +25,7 @@ function Header(props) {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showResourceModal, setShowResourceModal] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
+   const dispatch = useDispatch(); 
 
   const navigate = useNavigate();
 
@@ -38,19 +43,19 @@ function Header(props) {
   const handleCreateTopic = async (values, { setSubmitting, setFieldError }) => {
     const storedData = localStorage.getItem("token");
     const { token } = storedData ? JSON.parse(storedData) : {};
-
     if (!token) {
       Swal.fire("Error", "User is not authenticated", "error");
       return;
     }
-
     try {
       await axiosInstance.post('topiccreate', { name: values.name, visibility: values.visibility }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+       dispatch(fetchUserData(token,props.data))
+       dispatch(fetchTopics(token))
+       dispatch(fetchPublicTopic(token));
       setShowTopicModal(false);
       Swal.fire("Success", "Topic created successfully", "success");
     } catch (error) {

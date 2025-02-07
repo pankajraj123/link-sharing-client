@@ -8,7 +8,6 @@ import Swal from 'sweetalert2';
 
 function Forgot() {
     const navigate = useNavigate();
-
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -18,12 +17,11 @@ function Forgot() {
                 .email('Invalid email address')
                 .required('Email is required'),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values) =>{
             try {
                 const response = await axiosInstance.post('forgotpassword', {
                     email: values.email,
                 });
-
                 if (response.status === 200) {
                     Swal.fire({
                         icon: 'success',

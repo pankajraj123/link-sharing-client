@@ -12,16 +12,15 @@ const UserCard =()=>{
   const token = userData?.token;
   const storedUsername = userData?.username;
 
-  useEffect(() => {
-    if (token && storedUsername) {
+  useEffect(() =>{
+    if (token && storedUsername){
       dispatch(fetchUserData(token, storedUsername));
     }
   }, [dispatch, token, storedUsername]);
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  return (
+  return(
     <Container className="mt-5">
       <Row className="justify-content-center">
         <Col md={8}>

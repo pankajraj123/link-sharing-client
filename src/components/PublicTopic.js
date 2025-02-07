@@ -4,26 +4,20 @@ import { axiosInstance } from "../lib/axios";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
+import { useDispatch,useSelector } from 'react-redux';
+import { fetchPublicTopic } from '../redux/actions/publicTopicActions';
+import { fetchTopics } from '../redux/actions/topicActions';
 
 const PublicTopic = ({ token, username }) => {
-    const [topics, setTopics] = useState([]);
     const [subscriptions, setSubscriptions] = useState({});
+    const dispatch = useDispatch(); 
+  const { publicTopics, error } = useSelector((state) => state.publicTopics); 
 
     useEffect(() => {
-        if (token) {           
+        if (token) {     
+            dispatch(fetchPublicTopic(token));
             axiosInstance
-                .get('getPublicTopic', {
-                    headers: { Authorization: `Bearer ${token}` },
-                })
-                .then((response) => {
-                    setTopics(response.data.topic);
-                })
-                .catch((error) => {
-                    console.error('Error fetching topics:', error);
-                });
-
-            axiosInstance
-                .get('getUserSubscriptions', {
+                .get('getUserSubscriptions',{
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then((response) => {
@@ -37,7 +31,11 @@ const PublicTopic = ({ token, username }) => {
                     console.error('Error fetching user subscriptions:', error);
                 });
         }
-    }, [token]);
+    }, [token, dispatch]);
+
+    useEffect(()=>{
+     console.log(publicTopics)
+    },[publicTopics]);
 
     const formik = useFormik({
         initialValues: {
@@ -117,8 +115,8 @@ const PublicTopic = ({ token, username }) => {
     return (
         <div>
             <h1>Public Topics</h1>
-            {topics.length > 0 ? (
-                topics.map((topic, index) => (
+            {publicTopics.length > 0 ? (
+                publicTopics.map((topic, index) => (
                     <Card key={index} className="shadow-sm p-3 mb-3 rounded topic-card">
                         <Card.Body>
                             <h6><strong>Name:</strong> {topic.name}</h6>

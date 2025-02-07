@@ -1,5 +1,5 @@
 // redux/reducers/topicReducer.js
-import { SET_TOPICS, SET_LOADING, SET_ERROR } from '../types';
+import { SET_TOPICS, SET_LOADING, SET_ERROR } from '../types/topicType';
 
 const initialState = {
   topics: [],
