@@ -15,7 +15,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/topicDescription/:formattedTopicName" element={<ResourceShow />} />
+        <Route
+          path="/dashboard/topicDescription/:formattedTopicName"
+          element={<ResourceShow />}
+        />
         <Route path="/forgotpassword" element={<Forgot />} />
         <Route path="/resetPassword/:token" element={<ResetPassword />} />
       </Routes>

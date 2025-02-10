@@ -1,29 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { axiosInstance } from '../lib/axios';
+import React, { useEffect, useState } from "react";
+import { axiosInstance } from "../lib/axios";
 
-function ResourceShow() {// Extract the topicId from the URL
+function ResourceShow() {
   const [topicData, setTopicData] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
-
     const fetchTopicData = async () => {
-        const storedData = localStorage.getItem("token");
-        const topicId= localStorage.getItem("topicId");
-        const { token } = storedData ? JSON.parse(storedData) : {};
+      const storedData = localStorage.getItem("token");
+      const topicId = localStorage.getItem("topicId");
+      const { token } = storedData ? JSON.parse(storedData) : {};
       try {
-        const response = await axiosInstance.get(`getDiscription/${topicId}`,{
-            headers: { Authorization: `Bearer ${token}` },
-          });
-        setTopicData(response.data.topicData); // Assuming topicData is returned from backend
+        const response = await axiosInstance.get(`getDiscription/${topicId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setTopicData(response.data.topicData); 
       } catch (err) {
-        setError('Error fetching topic data');
+        setError("Error fetching topic data");
       }
     };
 
     fetchTopicData();
-  }, []); // Re-run the effect when the topicId changes
-
+  }, []); 
 
   if (error) {
     return <div>{error}</div>;
@@ -36,9 +34,16 @@ function ResourceShow() {// Extract the topicId from the URL
         topicData.map((data, index) => (
           <div key={index} className="topic-resource-card">
             <h3>{data.name}</h3>
-            <p><strong>Description:</strong> {data.description}</p>
-            <p><strong>Created By:</strong> {data.createdby}</p>
-            <p><strong>Date Created:</strong> {new Date(data.date).toLocaleDateString()}</p>
+            <p>
+              <strong>Description:</strong> {data.description}
+            </p>
+            <p>
+              <strong>Created By:</strong> {data.createdby}
+            </p>
+            <p>
+              <strong>Date Created:</strong>{" "}
+              {new Date(data.date).toLocaleDateString()}
+            </p>
           </div>
         ))
       ) : (

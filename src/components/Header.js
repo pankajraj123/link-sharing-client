@@ -6,39 +6,31 @@ import { FaLink } from "react-icons/fa6";
 import { FiFilePlus } from "react-icons/fi";
 import { Modal, Button, Form, Tooltip, OverlayTrigger } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-import { axiosInstance } from "../lib/axios";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
- import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchTopics } from "../redux/actions/topicActions";
 import { fetchPublicTopic } from "../redux/actions/publicTopicActions";
 import { fetchUserData } from "../redux/actions/userActions";
+import { handleLogout } from '../utils/userApi';
+import { createTopic } from "../utils/TopicApi"
+
+
 
 const topicValidationSchema = Yup.object().shape({
   name: Yup.string().required("Topic name is required."),
   visibility: Yup.string().required("Visibility is required.")
 });
 
-function Header(props) {
+function Header(props){
   const [showTopicModal, setShowTopicModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showResourceModal, setShowResourceModal] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
-   const dispatch = useDispatch(); 
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    localStorage.clear();
-    navigate('/');
-    Swal.fire({
-      icon: 'success',
-      title: 'Logged out successfully',
-      showConfirmButton: false,
-      timer: 1500
-    });
-  };
 
   const handleCreateTopic = async (values, { setSubmitting, setFieldError }) => {
     const storedData = localStorage.getItem("token");
@@ -48,22 +40,17 @@ function Header(props) {
       return;
     }
     try {
-      await axiosInstance.post('topiccreate', { name: values.name, visibility: values.visibility }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-       dispatch(fetchUserData(token,props.data))
-       dispatch(fetchTopics(token))
-       dispatch(fetchPublicTopic(token));
+      await createTopic(values, token);  // Use the function from TopicApi
+      dispatch(fetchUserData(token, props.data));
+      dispatch(fetchTopics(token));
+      dispatch(fetchPublicTopic(token));
       setShowTopicModal(false);
       Swal.fire("Success", "Topic created successfully", "success");
     } catch (error) {
-      if (error.response && (error.response.status === 409 || error.response.status === 400)) {
-        setFieldError("name", error.response.data.message);
+      if (typeof error === "string") {
+        setFieldError("name", error);
       } else {
-        Swal.fire("Error", "An error occurred while creating the topic.", "error");
-        console.error("Topic Create Error", error);
+        Swal.fire("Error", error, "error");
       }
     } finally {
       setSubmitting(false);
@@ -103,7 +90,6 @@ function Header(props) {
                   onClick={() => setShowTopicModal(true)}
                 />
               </OverlayTrigger>
-
               <CiMail className="fs-4 text-dark cursor-pointer" onClick={() => setShowInviteModal(true)} />
               <FaLink className="fs-4 text-secondary cursor-pointer" onClick={() => setShowResourceModal(true)} />
               <FiFilePlus className="fs-4 text-secondary cursor-pointer" onClick={() => setShowDocumentModal(true)} />
@@ -117,14 +103,13 @@ function Header(props) {
                   <li><a className="dropdown-item" >Profile</a></li>
                   <li><a className="dropdown-item" >Posts</a></li>
                   <li><a className="dropdown-item" >Topics</a></li>
-                  <button onClick={handleLogout} className="border border-white" ><li className="dropdown-item" >LogOut</li></button>
+                  <button onClick={()=>{handleLogout(navigate)}} className="border border-white" ><li className="dropdown-item" >LogOut</li></button>
                 </ul>
               </div>
             </div>
           )}
         </div>
       </div>
-
       <Modal show={showTopicModal} onHide={() => setShowTopicModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Create New Topic</Modal.Title>
@@ -133,7 +118,7 @@ function Header(props) {
           <Formik
             initialValues={{ name: '', visibility: 'public' }}
             validationSchema={topicValidationSchema}
-            onSubmit={handleCreateTopic}
+            onSubmit={handleCreateTopic} 
           >
             {({ handleSubmit, handleChange, values, errors, touched, isSubmitting }) => (
               <Form onSubmit={handleSubmit}>
@@ -147,7 +132,6 @@ function Header(props) {
                   isInvalid={touched.name && errors.name}
                 />
                 {errors.name && touched.name && <div className="text-danger mb-2">{errors.name}</div>}
-                
                 <Form.Select
                   name="visibility"
                   value={values.visibility}
@@ -158,7 +142,6 @@ function Header(props) {
                   <option value="private">Private</option>
                 </Form.Select>
                 {errors.visibility && touched.visibility && <div className="text-danger mb-2">{errors.visibility}</div>}
-
                 <Modal.Footer>
                   <Button variant="secondary" onClick={() => setShowTopicModal(false)}>Cancel</Button>
                   <Button variant="primary" type="submit" disabled={isSubmitting}>Save</Button>
@@ -168,7 +151,6 @@ function Header(props) {
           </Formik>
         </Modal.Body>
       </Modal>
-      
     </nav>
   );
 }

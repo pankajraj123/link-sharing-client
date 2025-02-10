@@ -1,27 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Modal, Button } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { fetchTopics } from '../redux/actions/topicActions'; 
-import { HandleDelete } from '../apiCallsSrc/TopicApi';
-import { HandleEdit } from '../apiCallsSrc/TopicApi';
-import { Formik, Field, Form } from 'formik';
-import * as Yup from 'yup';
+import React, { useState, useEffect } from "react";
+import { Card, Modal, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { fetchTopics } from "../redux/actions/topicActions";
+import { HandleDelete } from "../utils/TopicApi";
+import { HandleEdit } from "../utils/TopicApi";
+import { Formik, Field, Form } from "formik";
+import * as Yup from "yup";
+import { handleClickRead } from "../utils/TopicApi";
 
 const TopicCard = ({ token, username }) => {
-  const dispatch = useDispatch(); 
-  const navigate = useNavigate();
-  const { topics, loading, error } = useSelector((state) => state.topic); 
-
-  // Modal state
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState(null);
-
-  const handleClick = (topicname, topicId) => {
-    localStorage.setItem('topicId', topicId);
-    const formattedTopicName = topicname.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/dashboard/topicDescription/${formattedTopicName}`);
-  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { topics, loading, error } = useSelector((state) => state.topic);
 
   const handleEdit = (topic) => {
     setSelectedTopic(topic);
@@ -35,7 +28,7 @@ const TopicCard = ({ token, username }) => {
 
   useEffect(() => {
     if (token) {
-      dispatch(fetchTopics(token)); 
+      dispatch(fetchTopics(token));
     }
   }, [token, dispatch]);
 
@@ -54,22 +47,39 @@ const TopicCard = ({ token, username }) => {
           <Card key={index} className="shadow-sm p-3 mb-3 rounded topic-card">
             <Card.Body>
               <h6>{topic.name}</h6>
-              <p><strong>Visibility:</strong> {topic.visibility}</p>
-              <p><strong>Created By:</strong> {username}</p>
-              <p><strong>Date Created:</strong> {new Date(topic.dateCreated).toLocaleDateString()}</p>
+              <p>
+                <strong>Visibility:</strong> {topic.visibility}
+              </p>
+              <p>
+                <strong>Created By:</strong> {username}
+              </p>
+              <p>
+                <strong>Date Created:</strong>{" "}
+                {new Date(topic.dateCreated).toLocaleDateString()}
+              </p>
             </Card.Body>
             <div className="d-flex">
               <div className="d-flex gap-3">
-                <button className="btn-primary" onClick={() => handleEdit(topic)}>
+                <button
+                  className="btn-primary"
+                  onClick={() => handleEdit(topic)}
+                >
                   Edit
                 </button>
                 <button
                   className="btn-danger"
-                  onClick={() => HandleDelete(topic._id, token, dispatch, username)}
+                  onClick={() =>
+                    HandleDelete(topic._id, token, dispatch, username)
+                  }
                 >
                   Delete
                 </button>
-                <button className="btn-primary" onClick={() => handleClick(topic.name, topic._id)}>
+                <button
+                  className="btn-primary"
+                  onClick={() =>
+                    handleClickRead(topic.name, topic._id, navigate)
+                  }
+                >
                   Read More
                 </button>
               </div>
@@ -92,25 +102,39 @@ const TopicCard = ({ token, username }) => {
               visibility: selectedTopic.visibility,
             }}
             validationSchema={Yup.object({
-              name: Yup.string().required('Name is required'),
-              visibility: Yup.string().required('Visibility is required'),
+              name: Yup.string().required("Name is required"),
+              visibility: Yup.string().required("Visibility is required"),
             })}
             onSubmit={(values) => {
               const { name, visibility } = values;
               const body = { name, visibility };
               HandleEdit(selectedTopic._id, token, dispatch, body);
-              handleCloseModal();  // Close the modal after submitting
+              handleCloseModal();
             }}
           >
             <Form>
               <Modal.Body>
                 <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Topic Name</label>
-                  <Field type="text" id="name" name="name" className="form-control" />
+                  <label htmlFor="name" className="form-label">
+                    Topic Name
+                  </label>
+                  <Field
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="form-control"
+                  />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="visibility" className="form-label">Visibility</label>
-                  <Field as="select" id="visibility" name="visibility" className="form-control">
+                  <label htmlFor="visibility" className="form-label">
+                    Visibility
+                  </label>
+                  <Field
+                    as="select"
+                    id="visibility"
+                    name="visibility"
+                    className="form-control"
+                  >
                     <option value="public">Public</option>
                     <option value="private">Private</option>
                   </Field>

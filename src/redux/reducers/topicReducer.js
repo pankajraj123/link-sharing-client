@@ -1,5 +1,5 @@
 // redux/reducers/topicReducer.js
-import { SET_TOPICS, SET_LOADING, SET_ERROR } from '../types/topicType';
+import { SET_TOPICS, SET_LOADING, SET_ERROR } from "../types/topicType";
 
 const initialState = {
   topics: [],
@@ -12,17 +12,17 @@ const topicReducer = (state = initialState, action) => {
     case SET_TOPICS:
       return {
         ...state,
-        topics: action.payload,  
+        topics: action.payload,
       };
     case SET_LOADING:
       return {
         ...state,
-        loading: action.payload,  
+        loading: action.payload,
       };
     case SET_ERROR:
       return {
         ...state,
-        error: action.payload,  
+        error: action.payload,
       };
     default:
       return state;

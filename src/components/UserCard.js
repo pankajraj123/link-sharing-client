@@ -1,4 +1,3 @@
-// components/UserCard.js
 import React, { useEffect } from 'react';
 import { Card, Col, Row, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,19 +5,18 @@ import { fetchUserData } from '../redux/actions/userActions';
 
 const UserCard =()=>{
   const dispatch = useDispatch();
-  const { username, totalSubscription, totalTopic, loading, error } = useSelector((state) => state.user);
+  const { username, totalSubscription, totalTopic} = useSelector((state) => state.user);
 
   const userData = JSON.parse(localStorage.getItem('token'));
   const token = userData?.token;
   const storedUsername = userData?.username;
-
+  
   useEffect(() =>{
     if (token && storedUsername){
       dispatch(fetchUserData(token, storedUsername));
     }
   }, [dispatch, token, storedUsername]);
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  
 
   return(
     <Container className="mt-5">

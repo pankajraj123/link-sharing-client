@@ -1,11 +1,16 @@
-import { SET_USER_DATA, FETCH_USER_DATA_START, FETCH_USER_DATA_SUCCESS, FETCH_USER_DATA_FAILURE } from '../types/userType';
+import {
+  SET_USER_DATA,
+  FETCH_USER_DATA_START,
+  FETCH_USER_DATA_SUCCESS,
+  FETCH_USER_DATA_FAILURE,
+} from "../types/userType";
 
 const initialState = {
-  username: '',
+  username: "",
   totalSubscription: 0,
   totalTopic: 0,
   loading: false,
-  error: null
+  error: null,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -13,7 +18,12 @@ const userReducer = (state = initialState, action) => {
     case FETCH_USER_DATA_START:
       return { ...state, loading: true };
     case FETCH_USER_DATA_SUCCESS:
-      return { ...state, loading: false, totalSubscription: action.payload.totalSubscription, totalTopic: action.payload.totalTopic };
+      return {
+        ...state,
+        loading: false,
+        totalSubscription: action.payload.totalSubscription,
+        totalTopic: action.payload.totalTopic,
+      };
     case FETCH_USER_DATA_FAILURE:
       return { ...state, loading: false, error: action.payload };
     case SET_USER_DATA:
