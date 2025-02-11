@@ -1,117 +1,42 @@
+// src/components/PublicTopic.js
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { axiosInstance } from "../lib/axios";
-import { useFormik } from "formik";
-import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPublicTopic } from "../redux/actions/publicTopicActions";
-import { fetchUserData } from "../redux/actions/userActions";
+import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
+import Swal from "sweetalert2";
+import {handleUnsubscribe} from  '../utils/subscriptionApi'
+import {handleSubscribe} from  '../utils/subscriptionApi'
 
 const PublicTopic = ({ token, username }) => {
-  const [subscriptions, setSubscriptions] = useState({});
   const dispatch = useDispatch();
-
-  const { publicTopics, error } = useSelector((state) => state.publicTopics);
+  const { publicTopics } = useSelector((state) => state.publicTopics);
+  const { subscriptions } = useSelector((state) => state.subscriptions);
+  const [selectedSeriousness, setSelectedSeriousness] = useState("Casual");
 
   useEffect(() => {
     if (token) {
-      dispatch(fetchPublicTopic(token));
-      axiosInstance
-        .get("getUserSubscriptions", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => {
-          console.log(response.data.userSubscriptions);
-          const userSubscriptions = response.data.userSubscriptions.reduce(
-            (acc, subscription) => {
-              acc[subscription.topicId] = subscription.seriousness;
-              return acc;
-            },
-            {}
-          );
-          setSubscriptions(userSubscriptions);
-        })
-        .catch((error) => {
-          console.error("Error fetching user subscriptions:", error);
-        });
+      dispatch(fetchPublicTopic(token));  
+      dispatch(fetchUserSubscriptions(token));  
     }
   }, [token, dispatch]);
 
-  const formik = useFormik({
-    initialValues: {
-      seriousness: "Casual", // Default seriousness level
-    },
-  });
-
-  const handleSubscribe = async (topicId) => {
-    try {
-      const response = await axiosInstance.post(
-        `subscribe/${topicId}`,
-        { seriousness: formik.values.seriousness },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      // Update subscriptions state
-      setSubscriptions((prevSubscriptions) => ({
-        ...prevSubscriptions,
-        [topicId]: formik.values.seriousness,
-      }));
-      dispatch(fetchPublicTopic(token));
-      dispatch(fetchUserData(token, username));
-      Swal.fire({
-        icon: "success",
-        title: "Subscribed!",
-        text: `You have subscribed with seriousness level: ${formik.values.seriousness}`,
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: "There was an error subscribing to the topic.",
-      });
-      console.error("Error subscribing to topic:", error);
-    }
-  };
-
-  const handleUnsubscribe = async (topicId) => {
-    try {
-      await axiosInstance.delete(`unsubscribe/${topicId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
- 
-      setSubscriptions((prevSubscriptions) => {
-        const newSubscriptions = { ...prevSubscriptions };
-        delete newSubscriptions[topicId];
-        return newSubscriptions;
-      });
-      dispatch(fetchPublicTopic(token));
-      dispatch(fetchUserData(token, username));
-      Swal.fire({
-        icon: "info",
-        title: "Unsubscribed",
-        text: `You have unsubscribed from the topic.`,
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: "There was an error unsubscribing from the topic.",
-      });
-      console.error("Error unsubscribing from topic:", error);
-    }
-  };
-
   const isSubscribed = (topicId) => {
-    return subscriptions.hasOwnProperty(topicId);
+  return subscriptions.some((sub) =>(sub.topicId._id=== topicId))
+  };
+
+  const getSubscriptionData = (topicId) =>{
+    const subscription = subscriptions.find((sub) => sub.topicId._id === topicId);
+    return subscription ? subscription.seriousness : null;
   };
 
   return (
     <div>
       <h1>Public Topics</h1>
       {publicTopics.length > 0 ? (
-        publicTopics.map((topic, index) => (
-          <Card key={index} className="shadow-sm p-3 mb-3 rounded topic-card">
+        publicTopics.map((topic) => (
+          <Card key={topic._id} className="shadow-sm p-3 mb-3 rounded topic-card">
             <Card.Body>
               <h6>
                 <strong>Name:</strong> {topic.name}
@@ -127,42 +52,40 @@ const PublicTopic = ({ token, username }) => {
                 {new Date(topic.dateCreated).toLocaleDateString()}
               </p>
             </Card.Body>
+
+            {/* Show buttons based on subscription status */}
             {topic.username !== username && (
               <div className="d-flex gap-2">
                 {isSubscribed(topic._id) ? (
                   <>
                     <button
                       className="btn btn-danger"
-                      onClick={() => handleUnsubscribe(topic._id)}
+                      onClick={() => handleUnsubscribe(topic._id,token,dispatch,username)}
                     >
                       Unsubscribe
                     </button>
                     <span className="ml-2">
-                      <strong>Seriousness:</strong> {subscriptions[topic._id]}
+                      <strong>Seriousness:</strong>{" "}
+                      {getSubscriptionData(topic._id)}
                     </span>
                   </>
-                ) : (
+                ):(
                   <>
                     <button
                       className="btn btn-primary"
-                      onClick={() => handleSubscribe(topic._id)}
+                      onClick={() => handleSubscribe(topic._id,token,selectedSeriousness,dispatch,username)}
                     >
                       Subscribe
                     </button>
-                    <form>
-                      <select
-                        className="form-select"
-                        aria-label="Seriousness select"
-                        value={formik.values.seriousness}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        name="seriousness"
-                      >
-                        <option value="Casual">Casual</option>
-                        <option value="Serious">Serious</option>
-                        <option value="Very Serious">Very Serious</option>
-                      </select>
-                    </form>
+                    <select
+                      className="form-select"
+                      value={selectedSeriousness}
+                      onChange={(e) => setSelectedSeriousness(e.target.value)}
+                    >
+                      <option value="Casual">Casual</option>
+                      <option value="Serious">Serious</option>
+                      <option value="Very Serious">Very Serious</option>
+                    </select>
                   </>
                 )}
               </div>
@@ -177,4 +100,3 @@ const PublicTopic = ({ token, username }) => {
 };
 
 export default PublicTopic;
-// ye code bhi bese hi work kar raha he ye jo pahle kar raha tha aap isme sudhar karo   mera simple flow yahi he ki jab subsccribe kar to unsubscribe ubtton or jab unsuubscribe kart to subscrbe button dikhaye us topicnper ho haa page reload pe bhi

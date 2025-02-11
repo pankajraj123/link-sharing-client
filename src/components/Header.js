@@ -15,13 +15,8 @@ import { fetchPublicTopic } from "../redux/actions/publicTopicActions";
 import { fetchUserData } from "../redux/actions/userActions";
 import { handleLogout } from '../utils/userApi';
 import { createTopic } from "../utils/TopicApi"
+import {topicValidationSchema} from '../validationSchema/topicValidation'
 
-
-
-const topicValidationSchema = Yup.object().shape({
-  name: Yup.string().required("Topic name is required."),
-  visibility: Yup.string().required("Visibility is required.")
-});
 
 function Header(props){
   const [showTopicModal, setShowTopicModal] = useState(false);
@@ -32,28 +27,13 @@ function Header(props){
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleCreateTopic = async (values, { setSubmitting, setFieldError }) => {
-    const storedData = localStorage.getItem("token");
-    const { token } = storedData ? JSON.parse(storedData) : {};
-    if (!token) {
-      Swal.fire("Error", "User is not authenticated", "error");
-      return;
-    }
+  const handleCreateTopic = async (values) => {
     try {
-      await createTopic(values, token);  // Use the function from TopicApi
-      dispatch(fetchUserData(token, props.data));
-      dispatch(fetchTopics(token));
-      dispatch(fetchPublicTopic(token));
+      await createTopic(values,props.data,dispatch);  
       setShowTopicModal(false);
       Swal.fire("Success", "Topic created successfully", "success");
     } catch (error) {
-      if (typeof error === "string") {
-        setFieldError("name", error);
-      } else {
-        Swal.fire("Error", error, "error");
-      }
-    } finally {
-      setSubmitting(false);
+      Swal.fire("Error", error, "error");
     }
   };
 

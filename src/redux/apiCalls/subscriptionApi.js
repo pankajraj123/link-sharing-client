@@ -1,23 +1,12 @@
-import { axiosInstance } from "../../lib/axios"; // Adjust this to your axios instance
-
-// export const subscribeToTopicApi = (token, topicId, seriousness) => {
-//   return axiosInstance.post(
-//     `subscribe/${topicId}`,
-//     { seriousness },
-//     {
-//       headers: { Authorization: `Bearer ${token}` },
-//     }
-//   );
-// };
-
-// export const unsubscribeFromTopicApi = (token, topicId) => {
-//   return axiosInstance.delete(`unsubscribe/${topicId}`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-// };
-
-export const fetchUserSubscriptionsApi = (token) => {
-  return axiosInstance.get("getUserSubscriptions", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-};
+import { axiosInstance } from "../../lib/axios";
+ 
+export const getUserSubscriptions=async(token)=>{
+try {
+    const response = await axiosInstance.get("getUserSubscriptions", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data.userSubscriptions;
+  } catch (error) {
+    console.error("Error fetching user subscriptions:", error);
+  }
+}

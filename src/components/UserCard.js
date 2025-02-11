@@ -6,7 +6,6 @@ import { fetchUserData } from '../redux/actions/userActions';
 const UserCard =()=>{
   const dispatch = useDispatch();
   const { username, totalSubscription, totalTopic} = useSelector((state) => state.user);
-
   const userData = JSON.parse(localStorage.getItem('token'));
   const token = userData?.token;
   const storedUsername = userData?.username;
@@ -35,7 +34,6 @@ const UserCard =()=>{
                 <div>
                   <h2 className="font-weight-bold">{username}</h2>
                   <h4 className="text-muted">@{username}</h4>
-
                   <div className="d-flex gap-5 mt-4">
                     <div className="mr-4 text-center">
                       <h5 className="font-weight-normal">Subscriptions</h5>

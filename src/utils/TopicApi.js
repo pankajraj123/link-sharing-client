@@ -3,25 +3,37 @@ import { fetchTopics } from "../redux/actions/topicActions";
 import { axiosInstance } from "../lib/axios";
 import { fetchPublicTopic } from "../redux/actions/publicTopicActions";
 import { fetchUserData } from "../redux/actions/userActions";
-import { object } from "yup";
 
-export const createTopic = async (values, token) => {
+export const createTopic = async (values, propsdata, dispatch) => {
+  const storedData = localStorage.getItem("token");
+  const { token } = storedData ? JSON.parse(storedData) : {};
+  if (!token) {
+    Swal.fire("Error", "User is not authenticated", "error");
+    return;
+  }
   try {
-    const response = await axiosInstance.post('topiccreate', {
-      name: values.name,
-      visibility: values.visibility
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await axiosInstance.post(
+      "topiccreate",
+      {
+        name: values.name,
+        visibility: values.visibility,
       },
-    });
-
-    return response.data; 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    dispatch(fetchUserData(token, propsdata));
+    dispatch(fetchTopics(token));
+    dispatch(fetchPublicTopic(token));
+    return response.data;
   } catch (error) {
-    if (error.response && (error.response.status === 409 || error.response.status === 400)) {
-      throw error.response.data.message;  
-    } else {
-      throw  "An error occurred while creating the topic.";
+    if (
+      error.response &&
+      (error.response.status === 409 || error.response.status === 400)
+    ) {
+      throw error.response.data.message;
     }
   }
 };
@@ -57,9 +69,8 @@ export const HandleEdit = async (topicId, token, dispatch, Body) => {
   }
 };
 
-
-export const handleClickRead = (topicname, topicId,navigate) => {
-  localStorage.setItem('topicId', topicId);
-  const formattedTopicName = topicname.toLowerCase().replace(/\s+/g, '-');
+export const handleClickRead = (topicname, topicId, navigate) => {
+  localStorage.setItem("topicId", topicId);
+  const formattedTopicName = topicname.toLowerCase().replace(/\s+/g, "-");
   navigate(`/dashboard/topicDescription/${formattedTopicName}`);
 };

@@ -6,12 +6,14 @@ import userReducer from "./reducers/userReducer";
 import topicReducer from "./reducers/topicReducer";
 import publicReducers from "./reducers/publicReducers";
 import subscriptionReducer from "./reducers/subscriptionReducer";
+import resourceReducer from "./reducers/resourceReducer";
 
 const rootReducer = combineReducers({
   user: userReducer,
   topic: topicReducer,
   publicTopics: publicReducers,
   subscriptions: subscriptionReducer,
+  topicData: resourceReducer
 });
 
 const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

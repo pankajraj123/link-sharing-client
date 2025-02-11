@@ -39,6 +39,7 @@ export const handleForgotPassword = async (email, navigate) => {
       const response = await axiosInstance.post("forgotpassword", {
         email: email,
       });
+      console.log(response)
       if (response.status === 200) {
         Swal.fire({
           icon: "success",
@@ -99,10 +100,8 @@ export const handleLogin = async (values, navigate, setcheckcredential) => {
       email: email,
       password: password,
     };
-  
     try {
       const response = await axiosInstance.post("loginuser", data);
-      
       if (response.data.message === "user login sucessfully") {
         let items = {
           userId:response.data.userId,

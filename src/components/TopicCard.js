@@ -20,13 +20,12 @@ const TopicCard = ({ token, username }) => {
     setSelectedTopic(topic);
     setShowModal(true);
   };
-
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedTopic(null);
   };
 
-  useEffect(() => {
+  useEffect(() =>{
     if (token) {
       dispatch(fetchTopics(token));
     }

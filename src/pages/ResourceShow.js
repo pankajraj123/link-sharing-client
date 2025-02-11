@@ -1,32 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../lib/axios";
+import { useDispatch,useSelector } from "react-redux";
+import { fetchTopicDiscription } from "../redux/actions/resourceTopicActions";
+
 
 function ResourceShow() {
-  const [topicData, setTopicData] = useState(null);
-  const [error, setError] = useState("");
-
+   const dispatch= useDispatch();
+   const {topicData} =useSelector((state)=>state.topicData);
+   
   useEffect(() => {
-    const fetchTopicData = async () => {
       const storedData = localStorage.getItem("token");
       const topicId = localStorage.getItem("topicId");
       const { token } = storedData ? JSON.parse(storedData) : {};
       try {
-        const response = await axiosInstance.get(`getDiscription/${topicId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setTopicData(response.data.topicData); 
+       dispatch(fetchTopicDiscription(token,topicId)) 
       } catch (err) {
-        setError("Error fetching topic data");
+       console.log(err)
       }
-    };
+  }, [dispatch]); 
 
-    fetchTopicData();
-  }, []); 
+  useEffect(()=>{
+  },[topicData])
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
+  
   return (
     <div>
       <h1>Topic Details</h1>
