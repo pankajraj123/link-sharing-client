@@ -3,6 +3,7 @@ import { Card, Col, Row, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserData } from '../redux/actions/userActions';
 
+
 const UserCard =()=>{
   const dispatch = useDispatch();
   const { username, totalSubscription, totalTopic} = useSelector((state) => state.user);
@@ -18,6 +19,7 @@ const UserCard =()=>{
   
 
   return(
+    <>    
     <Container className="mt-5">
       <Row className="justify-content-center">
         <Col md={8}>
@@ -51,6 +53,7 @@ const UserCard =()=>{
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 

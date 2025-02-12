@@ -16,7 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route
-          path="/dashboard/topicDescription/:formattedTopicName"
+          path="/dashboard/topic-description/:seoName"
           element={<ResourceShow />}
         />
         <Route path="/forgotpassword" element={<Forgot />} />

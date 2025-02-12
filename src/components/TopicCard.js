@@ -8,6 +8,8 @@ import { HandleEdit } from "../utils/TopicApi";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import { handleClickRead } from "../utils/TopicApi";
+import moment from 'moment'
+import { toast } from "react-toastify";
 
 const TopicCard = ({ token, username }) => {
   const [showModal, setShowModal] = useState(false);
@@ -40,118 +42,120 @@ const TopicCard = ({ token, username }) => {
   }
 
   return (
-    <div>
-      {topics.length > 0 ? (
-        topics.map((topic, index) => (
-          <Card key={index} className="shadow-sm p-3 mb-3 rounded topic-card">
-            <Card.Body>
-              <h6>{topic.name}</h6>
-              <p>
-                <strong>Visibility:</strong> {topic.visibility}
-              </p>
-              <p>
-                <strong>Created By:</strong> {username}
-              </p>
-              <p>
-                <strong>Date Created:</strong>{" "}
-                {new Date(topic.dateCreated).toLocaleDateString()}
-              </p>
-            </Card.Body>
-            <div className="d-flex">
-              <div className="d-flex gap-3">
-                <button
-                  className="btn-primary"
-                  onClick={() => handleEdit(topic)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn-danger"
-                  onClick={() =>
-                    HandleDelete(topic._id, token, dispatch, username)
-                  }
-                >
-                  Delete
-                </button>
-                <button
-                  className="btn-primary"
-                  onClick={() =>
-                    handleClickRead(topic.name, topic._id, navigate)
-                  }
-                >
-                  Read More
-                </button>
-              </div>
-            </div>
-          </Card>
-        ))
-      ) : (
-        <p>No topics found.</p>
-      )}
-
-      {/* Modal for editing topic */}
-      {selectedTopic && (
-        <Modal show={showModal} onHide={handleCloseModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Topic</Modal.Title>
-          </Modal.Header>
-          <Formik
-            initialValues={{
-              name: selectedTopic.name,
-              visibility: selectedTopic.visibility,
-            }}
-            validationSchema={Yup.object({
-              name: Yup.string().required("Name is required"),
-              visibility: Yup.string().required("Visibility is required"),
-            })}
-            onSubmit={(values) => {
-              const { name, visibility } = values;
-              const body = { name, visibility };
-              HandleEdit(selectedTopic._id, token, dispatch, body);
-              handleCloseModal();
-            }}
-          >
-            <Form>
-              <Modal.Body>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">
-                    Topic Name
-                  </label>
-                  <Field
-                    type="text"
-                    id="name"
-                    name="name"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="visibility" className="form-label">
-                    Visibility
-                  </label>
-                  <Field
-                    as="select"
-                    id="visibility"
-                    name="visibility"
-                    className="form-control"
+    <>
+      <div>
+        {topics.length > 0 ? (
+          topics.map((topic, index) => (
+            <Card key={index} className="shadow-sm p-3 mb-3 rounded topic-card">
+              <Card.Body>
+                <h6>{topic.name}</h6>
+                <p>
+                  <strong>Visibility:</strong> {topic.visibility}
+                </p>
+                <p>
+                  <strong>Created By:</strong> {username}
+                </p>
+                <p>
+                  <strong>Date Created:</strong>{" "}
+                  {moment(topic.dateCreated).format("DD/MM/YYYY")}
+                </p>
+              </Card.Body>
+              <div className="d-flex">
+                <div className="d-flex gap-3">
+                  <button
+                    className="btn-primary"
+                    onClick={() => handleEdit(topic)}
                   >
-                    <option value="public">Public</option>
-                    <option value="private">Private</option>
-                  </Field>
+                    Edit
+                  </button>
+                  <button
+                    className="btn-danger"
+                    onClick={() =>
+                      HandleDelete(topic._id, token, dispatch, username)
+                    }
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="btn-primary"
+                    onClick={() =>
+                      handleClickRead(topic.name, topic._id, navigate)
+                    }
+                  >
+                    Read More
+                  </button>
                 </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseModal}>
-                  Close
-                </Button>
-                <Button variant="primary" type="submit">
-                  Save Changes
-                </Button>
-              </Modal.Footer>
-            </Form>
-          </Formik>
-        </Modal>
-      )}
-    </div>
+              </div>
+            </Card>
+          ))
+        ) : (
+          <p>No topics found.</p>
+        )}
+
+        {/* Modal for editing topic */}
+        {selectedTopic && (
+          <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Topic</Modal.Title>
+            </Modal.Header>
+            <Formik
+              initialValues={{
+                name: selectedTopic.name,
+                visibility: selectedTopic.visibility,
+              }}
+              validationSchema={Yup.object({
+                name: Yup.string().required("Name is required"),
+                visibility: Yup.string().required("Visibility is required"),
+              })}
+              onSubmit={(values) => {
+                const { name, visibility } = values;
+                const body = { name, visibility };
+                HandleEdit(selectedTopic._id, token, dispatch, body);
+                handleCloseModal();
+              }}
+            >
+              <Form>
+                <Modal.Body>
+                  <div className="mb-3">
+                    <label htmlFor="name" className="form-label">
+                      Topic Name
+                    </label>
+                    <Field
+                      type="text"
+                      id="name"
+                      name="name"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="visibility" className="form-label">
+                      Visibility
+                    </label>
+                    <Field
+                      as="select"
+                      id="visibility"
+                      name="visibility"
+                      className="form-control"
+                    >
+                      <option value="public">Public</option>
+                      <option value="private">Private</option>
+                    </Field>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleCloseModal}>
+                    Close
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </Form>
+            </Formik>
+          </Modal>
+        )}
+      </div>   
+    </>
   );
 };
 

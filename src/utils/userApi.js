@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 export const resetPassword = async (token, newPassword) => {
     try {
-      const response = await axiosInstance.post(`resetPassword/${token}`, {
+      const response = await axiosInstance.post(`reset-password/${token}`, {
         newPassword: newPassword,
       });
   
@@ -36,7 +36,7 @@ export const resetPassword = async (token, newPassword) => {
 
 export const handleForgotPassword = async (email, navigate) => {
     try {
-      const response = await axiosInstance.post("forgotpassword", {
+      const response = await axiosInstance.post("forgot-password", {
         email: email,
       });
       console.log(response)
@@ -69,40 +69,40 @@ export const handleForgotPassword = async (email, navigate) => {
 
 export const handleRegister = async (values, navigate) => {
     try {
-      const response = await axiosInstance.post("registeruser", values);
-       console.log(response.data);
-      if (response.data === "user is already exist") {
-        Swal.fire({
-          icon: "error",
-          title: "User already exists",
-          text: "Please try with a different username or email.",
-        });
-      } else {
+      const response = await axiosInstance.post("register-user", values);
+      if(response.status===200){
         Swal.fire({
           icon: "success",
           title: "Registration Successful",
           text: "You can now log in with your credentials.",
         });
-        navigate("/");
       }
+        navigate("/");
     } catch (err) {
-      Swal.fire({
+       if (err.response.status === 409) {
+         Swal.fire({
+           icon: "error",
+           title: err.response.data.message,
+           text: "Please try with a different username or email.",
+         });
+       }else{Swal.fire({
         icon: "error",
         title: "Registration failed",
         text: "Please try again later.",
       });
     }
+    }
   };
 
-export const handleLogin = async (values, navigate, setcheckcredential) => {
+export const handleLogin = async (values, navigate) => {
     const { email, password } = values;
     const data = {
       email: email,
       password: password,
     };
     try {
-      const response = await axiosInstance.post("loginuser", data);
-      if (response.data.message === "user login sucessfully") {
+      const response = await axiosInstance.post("login-user", data);
+      if (response.status ===200) {
         let items = {
           userId:response.data.userId,
           username: response.data.username,
@@ -110,25 +110,30 @@ export const handleLogin = async (values, navigate, setcheckcredential) => {
         };
         localStorage.setItem("token", JSON.stringify(items));
         navigate("/dashboard");
-      } else if (response.data === "login failed") {
-        setcheckcredential(true);
-      } else if (response.data === "user is not exist") {
+      }
+    } catch (err) {
+      if (err.status === 404) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
           text: "User does not exist!",
         });
+      }else if(err.status===401){
+         Swal.fire({
+           icon: "error",
+           title: "Oops...",
+           text: err.response.data.message,
+         });
+      }else{
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Login  Failed",
+    });
       }
-    } catch (err) {
-      console.error("Login Error:", err.response?.data || err.message);
-      Swal.fire({
-        icon: "error",
-        title: "Login failed",
-        text: err.response?.data?.message || "Please try again.",
-      });
+      
     }
   };
-
 
  export const handleforgot = async (navigate) => {
     navigate("/forgotpassword");

@@ -17,8 +17,8 @@ const RegisterForm = () => {
       <h2 className="mb-4">Register</h2>
       <Formik
         initialValues={{
-          firstname: "",
-          lastname: "",
+          firstName: "",
+          lastName: "",
           email: "",
           username: "",
           password: "",
@@ -29,34 +29,34 @@ const RegisterForm = () => {
       >
         <FormikForm>
           <div className="mb-3">
-            <label htmlFor="firstname" className="form-label">
+            <label htmlFor="firstName" className="form-label">
               First Name
             </label>
             <Field
               type="text"
-              id="firstname"
-              name="firstname"
+              id="firstName"
+              name="firstName"
               className="form-control"
             />
             <ErrorMessage
-              name="firstname"
+              name="firstName"
               component="div"
               className="text-danger"
             />
           </div>
 
           <div className="mb-3">
-            <label htmlFor="lastname" className="form-label">
+            <label htmlFor="lastName" className="form-label">
               Last Name
             </label>
             <Field
               type="text"
-              id="lastname"
-              name="lastname"
+              id="lastName"
+              name="lastName"
               className="form-control"
             />
             <ErrorMessage
-              name="lastname"
+              name="lastName"
               component="div"
               className="text-danger"
             />

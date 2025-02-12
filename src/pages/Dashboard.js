@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import UserCard from '../components/UserCard';
 import TopicCard from '../components/TopicCard';
 import PublicTopic from '../components/PublicTopic'
+import { ToastContainer ,toast} from "react-toastify";
 
 
 function Dashboard(){
@@ -20,6 +21,7 @@ function Dashboard(){
    
 
   return (
+    <>
     <div>
       <div className="container-fluid">
         {parseduser ? <Header data={parseduser.username} show={isshow} /> : <p>Redirecting...</p>}
@@ -38,6 +40,8 @@ function Dashboard(){
         </div>
       </div>
     </div>
+   <ToastContainer/>
+    </>
   );
 }
 

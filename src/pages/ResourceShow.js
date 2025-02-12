@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "../lib/axios";
 import { useDispatch,useSelector } from "react-redux";
 import { fetchTopicDiscription } from "../redux/actions/resourceTopicActions";
+import moment from "moment";
 
-
-function ResourceShow() {
+function ResourceShow(){
    const dispatch= useDispatch();
    const {topicData} =useSelector((state)=>state.topicData);
    
@@ -38,7 +37,7 @@ function ResourceShow() {
             </p>
             <p>
               <strong>Date Created:</strong>{" "}
-              {new Date(data.date).toLocaleDateString()}
+              {moment(data.date).format("DD/MM/YYYY")}
             </p>
           </div>
         ))

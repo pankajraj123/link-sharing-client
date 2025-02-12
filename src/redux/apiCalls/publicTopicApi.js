@@ -2,7 +2,7 @@ import { axiosInstance } from "../../lib/axios";
 
 export const getPublicTopic = async (token) => {
   try {
-    const response = await axiosInstance.get("getPublicTopic", {
+    const response = await axiosInstance.get("get-public-topic", {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data.topic;
