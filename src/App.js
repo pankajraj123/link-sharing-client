@@ -19,7 +19,7 @@ function App() {
           path="/dashboard/topic-description/:seoName"
           element={<ResourceShow />}
         />
-        <Route path="/forgotpassword" element={<Forgot />} />
+        <Route path="/forgot-password" element={<Forgot />} />
         <Route path="/resetPassword/:token" element={<ResetPassword />} />
       </Routes>
     </Provider>

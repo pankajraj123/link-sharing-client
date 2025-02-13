@@ -9,9 +9,10 @@ import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import { handleClickRead } from "../utils/TopicApi";
 import moment from 'moment'
-import { toast } from "react-toastify";
+import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
 
-const TopicCard = ({ token, username }) => {
+
+const TopicCard = ({ token, userName }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ const TopicCard = ({ token, username }) => {
                   <strong>Visibility:</strong> {topic.visibility}
                 </p>
                 <p>
-                  <strong>Created By:</strong> {username}
+                  <strong>Created By:</strong> {userName}
                 </p>
                 <p>
                   <strong>Date Created:</strong>{" "}
@@ -71,7 +72,7 @@ const TopicCard = ({ token, username }) => {
                   <button
                     className="btn-danger"
                     onClick={() =>
-                      HandleDelete(topic._id, token, dispatch, username)
+                      HandleDelete(topic._id, token, dispatch, userName)
                     }
                   >
                     Delete

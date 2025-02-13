@@ -7,9 +7,9 @@ import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
 import {handleUnsubscribe} from  '../utils/subscriptionApi'
 import {handleSubscribe} from  '../utils/subscriptionApi'
 import moment from "moment";
-import { ToastContainer } from "react-toastify";
 
-const PublicTopic = ({ token, username }) => {
+
+const PublicTopic = ({ token, userName }) => {
   const dispatch = useDispatch();
   const { publicTopics } = useSelector((state) => state.publicTopics);
   const { subscriptions } = useSelector((state) => state.subscriptions);
@@ -22,7 +22,7 @@ useEffect(() => {
     }
 }, [token, dispatch]);
 
-  const isSubscribed = (topicId) => {
+  const isSubscribed = (topicId) =>{
   return subscriptions.some((sub) =>(sub.topicId._id=== topicId))
   };
 
@@ -49,14 +49,14 @@ useEffect(() => {
                   <strong>Visibility:</strong> {topic.visibility}
                 </p>
                 <p>
-                  <strong>Created By:</strong> {topic.username}
+                  <strong>Created By:</strong> {topic.userName}
                 </p>
                 <p>
                   <strong>Date Created:</strong>{" "}
                   {moment(topic.dateCreated).format("DD/MM/YYYY")}
                 </p>
               </Card.Body>
-              {topic.username !== username && (
+              {topic.userName !== userName && (
                 <div className="d-flex gap-2">
                   {isSubscribed(topic._id) ? (
                     <>
@@ -67,7 +67,7 @@ useEffect(() => {
                             topic._id,
                             token,
                             dispatch,
-                            username
+                            userName
                           )
                         }
                       >
@@ -88,7 +88,7 @@ useEffect(() => {
                             token,
                             selectedSeriousness,
                             dispatch,
-                            username
+                            userName
                           )
                         }
                       >

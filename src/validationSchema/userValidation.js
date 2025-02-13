@@ -6,7 +6,7 @@ export const validationSchemaRegister = Yup.object({
   email: Yup.string()
     .email("Invalid email format")
     .required("Email is required"),
-  username: Yup.string().required("Username is required"),
+  userName: Yup.string().required("UserName is required"),
   password: Yup.string().required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")

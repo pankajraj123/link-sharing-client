@@ -44,19 +44,25 @@ export const HandleDelete = async (
   topicId,
   token,
   dispatch,
-  storedUsername
+  storedUserName
 ) => {
   try {
-    const data="hello i am"
+   await  Swal.fire({
+       title: "Are you sure?",
+       text: "You Delete Topic Permanently",
+       icon: "warning",
+       showCancelButton: true,
+       confirmButtonText: "Yes",
+       cancelButtonText: "No",
+     })
     await axiosInstance.delete(`delete-topic/${topicId}`,{
       headers: { Authorization: `Bearer ${token}` },
     });
     dispatch(fetchTopics(token));
     dispatch(fetchPublicTopic(token));
-    dispatch(fetchUserData(token, storedUsername));
-    toast.success("Topic deleted Successfully")
+    dispatch(fetchUserData(token, storedUserName));
   } catch (error) {
-    Swal.fire("Error", "Topic not  deleted", "danger");
+    toast.error('Topic Not Deleted');
   }
 };
 export const HandleEdit = async (topicId, token, dispatch, Body) => {

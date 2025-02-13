@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+
 import { Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
@@ -20,7 +20,7 @@ const RegisterForm = () => {
           firstName: "",
           lastName: "",
           email: "",
-          username: "",
+          userName: "",
           password: "",
           confirmPassword: "",
         }}
@@ -80,17 +80,17 @@ const RegisterForm = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Username
+            <label htmlFor="userName" className="form-label">
+              userName
             </label>
             <Field
               type="text"
-              id="username"
-              name="username"
+              id="userName"
+              name="userName"
               className="form-control"
             />
             <ErrorMessage
-              name="username"
+              name="userName"
               component="div"
               className="text-danger"
             />

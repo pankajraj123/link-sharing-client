@@ -9,7 +9,7 @@ export default function Home() {
       <div>
         <Header />
       </div>
-      <div className="col-6">First Coloumn</div>
+      <div className="col-6"></div>
       <div className="col-6">
         <div className="mb-4 ">
           <Login />

@@ -1,9 +1,8 @@
 // Login.js
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { handleLogin } from "../utils/userApi"; 
-import { handleforgot } from "../utils/userApi";
+import { handleForgot } from "../utils/userApi";
 import {validationSchemaLogin} from '../validationSchema/userValidation'
 import { ToastContainer } from "react-toastify";
 
@@ -63,7 +62,7 @@ function Login() {
                   type="button"
                   className="btn btn-primary"
                   onClick={() => {
-                    handleforgot(navigate);
+                    handleForgot(navigate);
                   }} // Handling forgot password logic here
                 >
                   Forgot password

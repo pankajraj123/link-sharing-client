@@ -10,9 +10,9 @@ import {
   FETCH_USER_DATA_FAILURE,
 } from "../types/userType";
 
-export const setUserData = (username, totalSubscription, totalTopic) => ({
+export const setUserData = (userName, totalSubscription, totalTopic) => ({
   type: SET_USER_DATA,
-  payload: { username, totalSubscription, totalTopic },
+  payload: { userName, totalSubscription, totalTopic },
 });
 
 export const fetchUserDataStart = () => ({
@@ -29,7 +29,7 @@ export const fetchUserDataFailure = (error) => ({
   payload: error,
 });
 
-export const fetchUserData = (token, storedUsername) => {
+export const fetchUserData = (token, storedUserName) => {
   return async (dispatch) => {
     dispatch(fetchUserDataStart());
     try {
@@ -43,7 +43,7 @@ export const fetchUserData = (token, storedUsername) => {
       );
       dispatch(
         setUserData(
-          storedUsername,
+          storedUserName,
           subscriptionResponse.data.count,
           topicResponse.data.totalTopic
         )

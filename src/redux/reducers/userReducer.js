@@ -6,7 +6,7 @@ import {
 } from "../types/userType";
 
 const initialState = {
-  username: "",
+  userName: "",
   totalSubscription: 0,
   totalTopic: 0,
   loading: false,
@@ -27,7 +27,7 @@ const userReducer = (state = initialState, action) => {
     case FETCH_USER_DATA_FAILURE:
       return { ...state, loading: false, error: action.payload };
     case SET_USER_DATA:
-      return { ...state, username: action.payload.username };
+      return { ...state, userName: action.payload.userName };
     default:
       return state;
   }

@@ -12,7 +12,8 @@ import { useDispatch } from "react-redux";
 import { handleLogout } from "../utils/userApi";
 import { createTopic } from "../utils/TopicApi";
 import { topicValidationSchema } from "../validationSchema/topicValidation";
-import { ToastContainer, toast } from "react-toastify";
+import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
+import {token} from '../jwt_token';
 
 function Header(props) {
   const [showTopicModal, setShowTopicModal] = useState(false);
@@ -26,6 +27,7 @@ function Header(props) {
   const handleCreateTopic = async (values) => {
     try {
       await createTopic(values, props.data, dispatch);
+       dispatch(fetchUserSubscriptions(token))
       setShowTopicModal(false);
     } catch (error) {
       Swal.fire("Error", error, "error");
