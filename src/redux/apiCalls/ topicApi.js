@@ -3,7 +3,7 @@ import { axiosInstance } from "../../lib/axios";
 
 export const getTopics = async (token) => {
   try {
-    const response = await axiosInstance.get("getUserTopic", {
+    const response = await axiosInstance.get("get-user-topic", {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data.topic;

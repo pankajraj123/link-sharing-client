@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+
 import { Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
@@ -17,10 +17,10 @@ const RegisterForm = () => {
       <h2 className="mb-4">Register</h2>
       <Formik
         initialValues={{
-          firstname: "",
-          lastname: "",
+          firstName: "",
+          lastName: "",
           email: "",
-          username: "",
+          userName: "",
           password: "",
           confirmPassword: "",
         }}
@@ -29,34 +29,34 @@ const RegisterForm = () => {
       >
         <FormikForm>
           <div className="mb-3">
-            <label htmlFor="firstname" className="form-label">
+            <label htmlFor="firstName" className="form-label">
               First Name
             </label>
             <Field
               type="text"
-              id="firstname"
-              name="firstname"
+              id="firstName"
+              name="firstName"
               className="form-control"
             />
             <ErrorMessage
-              name="firstname"
+              name="firstName"
               component="div"
               className="text-danger"
             />
           </div>
 
           <div className="mb-3">
-            <label htmlFor="lastname" className="form-label">
+            <label htmlFor="lastName" className="form-label">
               Last Name
             </label>
             <Field
               type="text"
-              id="lastname"
-              name="lastname"
+              id="lastName"
+              name="lastName"
               className="form-control"
             />
             <ErrorMessage
-              name="lastname"
+              name="lastName"
               component="div"
               className="text-danger"
             />
@@ -80,17 +80,17 @@ const RegisterForm = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Username
+            <label htmlFor="userName" className="form-label">
+              userName
             </label>
             <Field
               type="text"
-              id="username"
-              name="username"
+              id="userName"
+              name="userName"
               className="form-control"
             />
             <ErrorMessage
-              name="username"
+              name="userName"
               component="div"
               className="text-danger"
             />

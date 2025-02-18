@@ -3,21 +3,22 @@ import { Card, Col, Row, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserData } from '../redux/actions/userActions';
 
+
 const UserCard =()=>{
   const dispatch = useDispatch();
-  const { username, totalSubscription, totalTopic} = useSelector((state) => state.user);
+  const { userName, totalSubscription, totalTopic} = useSelector((state) => state.user);
   const userData = JSON.parse(localStorage.getItem('token'));
   const token = userData?.token;
-  const storedUsername = userData?.username;
+  const storedUserName = userData?.userName;
   
   useEffect(() =>{
-    if (token && storedUsername){
-      dispatch(fetchUserData(token, storedUsername));
+    if (token && storedUserName){
+      dispatch(fetchUserData(token, storedUserName));
     }
-  }, [dispatch, token, storedUsername]);
+  }, [dispatch, token, storedUserName]);
   
-
   return(
+    <>    
     <Container className="mt-5">
       <Row className="justify-content-center">
         <Col md={8}>
@@ -32,8 +33,8 @@ const UserCard =()=>{
                   />
                 </div>
                 <div>
-                  <h2 className="font-weight-bold">{username}</h2>
-                  <h4 className="text-muted">@{username}</h4>
+                  <h2 className="font-weight-bold">{userName}</h2>
+                  <h4 className="text-muted">@{userName}</h4>
                   <div className="d-flex gap-5 mt-4">
                     <div className="mr-4 text-center">
                       <h5 className="font-weight-normal">Subscriptions</h5>
@@ -51,6 +52,7 @@ const UserCard =()=>{
         </Col>
       </Row>
     </Container>
+    </>
   );
 };
 

@@ -16,10 +16,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route
-          path="/dashboard/topicDescription/:formattedTopicName"
+          path="/dashboard/topic-description/:seoName"
           element={<ResourceShow />}
         />
-        <Route path="/forgotpassword" element={<Forgot />} />
+        <Route path="/forgot-password" element={<Forgot />} />
         <Route path="/resetPassword/:token" element={<ResetPassword />} />
       </Routes>
     </Provider>
