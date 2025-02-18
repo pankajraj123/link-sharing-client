@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { TbMessageCircleFilled } from "react-icons/tb";
-import { CiMail } from "react-icons/ci";
-import { FaLink } from "react-icons/fa6";
-import { FiFilePlus } from "react-icons/fi";
+// import { CiMail } from "react-icons/ci";
+// import { FaLink } from "react-icons/fa6";
+// import { FiFilePlus } from "react-icons/fi";
 import { Modal, Button, Form, Tooltip, OverlayTrigger } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
@@ -17,9 +17,9 @@ import {token} from '../jwt_token';
 
 function Header(props) {
   const [showTopicModal, setShowTopicModal] = useState(false);
-  const [showInviteModal, setShowInviteModal] = useState(false);
-  const [showResourceModal, setShowResourceModal] = useState(false);
-  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  // const [showInviteModal, setShowInviteModal] = useState(false);
+  // const [showResourceModal, setShowResourceModal] = useState(false);
+  // const [showDocumentModal, setShowDocumentModal] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -77,7 +77,7 @@ function Header(props) {
                     onClick={() => setShowTopicModal(true)}
                   />
                 </OverlayTrigger>
-                <CiMail
+                {/* <CiMail
                   className="fs-4 text-dark cursor-pointer"
                   onClick={() => setShowInviteModal(true)}
                 />
@@ -88,7 +88,7 @@ function Header(props) {
                 <FiFilePlus
                   className="fs-4 text-secondary cursor-pointer"
                   onClick={() => setShowDocumentModal(true)}
-                />
+                /> */}
                 <div className="dropdown">
                   <button
                     className="btn d-flex align-items-center dropdown-toggle"

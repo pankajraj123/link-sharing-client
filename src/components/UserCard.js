@@ -17,7 +17,6 @@ const UserCard =()=>{
     }
   }, [dispatch, token, storedUserName]);
   
-
   return(
     <>    
     <Container className="mt-5">
