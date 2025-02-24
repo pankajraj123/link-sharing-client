@@ -9,7 +9,7 @@ import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import { handleClickRead } from "../utils/TopicApi";
 import moment from 'moment'
-import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
+
 
 
 const TopicCard = ({ token, userName }) => {
@@ -72,7 +72,7 @@ const TopicCard = ({ token, userName }) => {
                   <button
                     className="btn-danger"
                     onClick={() =>
-                      HandleDelete(topic._id, token, dispatch, userName)
+                      HandleDelete(topic._id,token, dispatch, userName)
                     }
                   >
                     Delete
@@ -108,7 +108,7 @@ const TopicCard = ({ token, userName }) => {
                 name: Yup.string().required("Name is required"),
                 visibility: Yup.string().required("Visibility is required"),
               })}
-              onSubmit={(values) => {
+              onSubmit={(values) =>{
                 const { name, visibility } = values;
                 const body = { name, visibility };
                 HandleEdit(selectedTopic._id, token, dispatch, body);

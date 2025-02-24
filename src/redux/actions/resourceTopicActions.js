@@ -1,17 +1,17 @@
-import { FETCH_TOPIC_DISCRIPTIONS } from "../types/resourceTopicType";
-import { getDiscription } from "../apiCalls/resourceAPi";
+import { FETCH_TOPIC_DESCRIPTIONS } from "../types/resourceTopicType";
+import { getDescription } from "../apiCalls/resourceAPi";
 
-export const  fetchTopicDiscription=(token,topicId)=> async(dispatch)=>{
+export const  fetchTopicDescription=(token,topicId)=> async(dispatch)=>{
   try{
-   const topicDescription= await getDiscription(token,topicId);
+   const topicDescription= await getDescription(token,topicId);
    console.log(topicDescription);
-   dispatch(setTopicDiscription(topicDescription))
+   dispatch(setTopicDescription(topicDescription))
   }catch(error){
-     console.log("Error Fetching Topic Discription",error)
+     console.log("Error Fetching Topic Description",error)
   }
 };
 
-export const  setTopicDiscription=(topicDescription)=>({
-    type:  FETCH_TOPIC_DISCRIPTIONS,
+export const  setTopicDescription=(topicDescription)=>({
+    type:  FETCH_TOPIC_DESCRIPTIONS,
     payload: topicDescription
 });

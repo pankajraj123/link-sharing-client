@@ -1,6 +1,6 @@
 import React, { useEffect, } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { fetchTopicDiscription } from "../redux/actions/resourceTopicActions";
+import { fetchTopicDescription } from "../redux/actions/resourceTopicActions";
 import moment from "moment";
 
 function ResourceShow(){
@@ -12,7 +12,7 @@ function ResourceShow(){
       const topicId = localStorage.getItem("topicId");
       const { token } = storedData ? JSON.parse(storedData) : {};
       try {
-       dispatch(fetchTopicDiscription(token,topicId)) 
+       dispatch(fetchTopicDescription(token,topicId)) 
       } catch (err) {
        console.log(err)
       }

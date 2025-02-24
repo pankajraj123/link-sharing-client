@@ -5,13 +5,11 @@ import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
 import { handleForgotPassword } from "../utils/userApi"; 
 import {validationSchemaForgot} from '../validationSchema/userValidation'
 
-const Forgot = () => {
+const Forgot=()=>{
   const navigate = useNavigate();
-
   const handleSubmit = async (values) => {
     await handleForgotPassword(values.email, navigate);
   };
-
   return (
     <Container className="mt-5">
       <h2 className="mb-4">Forgot Password</h2>
