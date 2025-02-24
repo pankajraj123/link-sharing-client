@@ -2,7 +2,6 @@
 import { FETCH_USER_SUBSCRIPTIONS } from "../types/subscriptionTypes";
 import {getUserSubscriptions} from '../apiCalls/subscriptionApi'
 
-
 export const fetchUserSubscriptions = (token) => {
   return async (dispatch) => {
     try {
@@ -14,8 +13,8 @@ export const fetchUserSubscriptions = (token) => {
   };
 };
 
-
 export const setUsersubscriptions= (userSubscriptions)=>({
 type: FETCH_USER_SUBSCRIPTIONS,
 payload: userSubscriptions, 
  });
+ 

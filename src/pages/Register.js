@@ -8,10 +8,9 @@ import { validationSchemaRegister } from "../validationSchema/userValidation";
 const RegisterForm = () => {
   const navigate = useNavigate();
 
-  const handleSubmit =  async (values) => {
-  await  handleRegister(values, navigate);
-  };
-
+const handleSubmit =  async (values) => {
+await  handleRegister(values, navigate);
+};
   return (
     <Container className="mt-5">
       <h2 className="mb-4">Register</h2>
@@ -78,8 +77,7 @@ const RegisterForm = () => {
               className="text-danger"
             />
           </div>
-
-          <div className="mb-3">
+            <div className="mb-3">
             <label htmlFor="userName" className="form-label">
               userName
             </label>
@@ -95,7 +93,6 @@ const RegisterForm = () => {
               className="text-danger"
             />
           </div>
-
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
               Password
@@ -112,7 +109,6 @@ const RegisterForm = () => {
               className="text-danger"
             />
           </div>
-
           <div className="mb-3">
             <label htmlFor="confirmPassword" className="form-label">
               Confirm Password

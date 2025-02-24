@@ -1,6 +1,6 @@
 import { axiosInstance } from "../../lib/axios";
 
-export const getDiscription= async(token,topicId)=>{
+export const getDescription= async(token,topicId)=>{
   try {
          const response = await axiosInstance.get(`get-description/${topicId}`, {
            headers: { Authorization: `Bearer ${token}` },

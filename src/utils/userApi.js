@@ -16,6 +16,11 @@ import {
   FORGOT_PASSWORD_WRONG_EMAIL,
   FORGOT_PASSWORD_SUCCESS,
 } from "../constants/Forgot.constant";
+import {
+  RESET_PASSWORD_CANCEL,
+  RESET_PASSWORD_AUTHENTICATION_FAILURE,
+  RESET_PASSWORD_FAILURE
+} from "../constants/ResetPassword.constant";
 
 export const resetPassword = async (token, newPassword) => {
   try {
@@ -28,11 +33,11 @@ export const resetPassword = async (token, newPassword) => {
     }
   } catch (error) {
     if (error.response && error.response.status === 400) {
-      return { success: false, message: "Invalid or expired token" };
+      return { success: false, message: RESET_PASSWORD_AUTHENTICATION_FAILURE };
     }
     return {
       success: false,
-      message: "Something went wrong. Please try again later.",
+      message: RESET_PASSWORD_FAILURE,
     };
   }
 };
@@ -40,7 +45,7 @@ export const resetPassword = async (token, newPassword) => {
 export const handleCancelResetPassword = (navigate) => {
   Swal.fire({
     title: "Are you sure?",
-    text: "You will be redirected to the home page.",
+    text: RESET_PASSWORD_CANCEL,
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, go to home",
