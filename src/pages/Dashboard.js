@@ -18,7 +18,6 @@ function Dashboard(){
     }
   },[token,navigate]);
    
-
   return (
     <>
     <div>
