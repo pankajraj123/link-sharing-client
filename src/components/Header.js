@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { TbMessageCircleFilled } from "react-icons/tb";
-// import { CiMail } from "react-icons/ci";
-// import { FaLink } from "react-icons/fa6";
-// import { FiFilePlus } from "react-icons/fi";
 import { Modal, Button, Form, Tooltip, OverlayTrigger } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
@@ -14,18 +11,19 @@ import { createTopic } from "../utils/TopicApi";
 import { topicValidationSchema } from "../validationSchema/topicValidation";
 import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
 import {token} from '../jwt_token';
+import {toast} from 'react-toastify'
 
 function Header(props) {
   const [showTopicModal, setShowTopicModal] = useState(false);
-  // const [showInviteModal, setShowInviteModal] = useState(false);
-  // const [showResourceModal, setShowResourceModal] = useState(false);
-  // const [showDocumentModal, setShowDocumentModal] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleCreateTopic = async (values) => {
     try {
+      if(token=== null){
+        return  toast.error('Token is null');
+      }
       await createTopic(values, props.data, dispatch);
        dispatch(fetchUserSubscriptions(token))
       setShowTopicModal(false);
