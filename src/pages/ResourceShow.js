@@ -1,48 +1,61 @@
-import React, { useEffect, } from "react";
-import { useDispatch,useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchTopicDescription } from "../redux/actions/resourceTopicActions";
 import moment from "moment";
+import { Card } from "react-bootstrap"; 
 
-function ResourceShow(){
-   const dispatch= useDispatch();
-   const {topicData} =useSelector((state)=>state.topicData);
-   
+
+function ResourceShow() {
+  const dispatch = useDispatch();
+  const { topicData } = useSelector((state) => state.topicData);
+
   useEffect(() => {
-      const storedData = localStorage.getItem("token");
-      const topicId = localStorage.getItem("topicId");
-      const { token } = storedData ? JSON.parse(storedData) : {};
-      try {
-       dispatch(fetchTopicDescription(token,topicId)) 
-      } catch (err) {
-       console.log(err)
-      }
-  }, [dispatch]); 
+    const storedData = localStorage.getItem("token");
+    const topicId = localStorage.getItem("topicId");
+    const { token } = storedData ? JSON.parse(storedData) : {};
+    try {
+      dispatch(fetchTopicDescription(token, topicId));
+    } catch (err) {
+      console.log(err);
+    }
+  }, [dispatch]);
 
-  useEffect(()=>{
-  },[topicData])
-
-  
   return (
-    <div>
-      <h1>Topic Details</h1>
+    <div className="container mt-5">
+      <h1 className="mb-4 text-center">Topic Resources</h1>
       {topicData && topicData.length > 0 ? (
-        topicData.map((data, index) => (
-          <div key={index} className="topic-resource-card">
-            <h3>{data.name}</h3>
-            <p>
-              <strong>Description:</strong> {data.description}
-            </p>
-            <p>
-              <strong>Created By:</strong> {data.createdBy}
-            </p>
-            <p>
-              <strong>Date Created:</strong>{" "}
-              {moment(data.date).format("DD/MM/YYYY")}
-            </p>
-          </div>
-        ))
+        <div className="d-flex justify-content-center align-items-center flex-column">
+          {topicData.map((data, index) => (
+            <div key={index} className="mb-4 w-75">
+              <Card className="shadow-sm border-0">
+                <Card.Body>
+                  <h5 className="card-title ">{data.name}</h5>
+                  <p className="card-text ">
+                    <strong>Description:</strong> {data.description}
+                  </p>
+                  <p className="card-text">
+                    <strong>Created By:</strong> {data.createdBy}
+                  </p>
+                  <p className="card-text ">
+                    <strong>Date Created:</strong>{" "}
+                    {moment(data.date).format("DD/MM/YYYY")}
+                  </p>
+                   {/* Link Section */}
+                  {data.Url && (
+                    <p className="card-text ">
+                      <strong>Link:</strong>{" "}
+                      <a href={data.Url} target="_blank" rel="noopener noreferrer">
+                        {data.Url}
+                      </a>
+                    </p>
+                    )}
+                </Card.Body>
+              </Card>
+            </div>
+          ))}
+        </div>
       ) : (
-        <p>No resources found for this topic.</p>
+        <p className="text-center">No resources found for this topic.</p>
       )}
     </div>
   );

@@ -6,17 +6,21 @@ import TopicCard from '../components/TopicCard';
 import PublicTopic from '../components/PublicTopic'
 import { ToastContainer } from "react-toastify";
 import UserSubscriptions from '../components/UserSubscriptions';
-import {token,userName} from '../jwt_token'
 
 function Dashboard(){
   const navigate = useNavigate();
   const isShow = true;
+  const user = localStorage.getItem("token");
+  const parsedUser = user ? JSON.parse(user) : null;
+  const token = parsedUser?.token;
+  const userName = parsedUser?.userName;
   
   useEffect(() =>{
     if (!token) {
-      navigate('/'); 
+      navigate("/");
     }
-  },[token,navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[token]);
    
   return (
     <>

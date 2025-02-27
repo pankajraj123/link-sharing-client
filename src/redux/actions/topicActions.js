@@ -3,6 +3,7 @@ import { SET_TOPICS, SET_LOADING, SET_ERROR } from "../types/topicType";
 import { getTopics } from "../apiCalls/ topicApi";
 
 export const fetchTopics = (token) => async (dispatch) => {
+  console.log(token);
   try {
     dispatch(setLoading(true));
     const topics = await getTopics(token);
