@@ -1,36 +1,17 @@
 import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { TbMessageCircleFilled } from "react-icons/tb";
-import { Modal, Button, Form, Tooltip, OverlayTrigger } from "react-bootstrap";
+import { FaLink } from "react-icons/fa";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Formik } from "formik";
-import Swal from "sweetalert2";
-import { useDispatch } from "react-redux";
 import { handleLogout } from "../utils/userApi";
-import { createTopic } from "../utils/TopicApi";
-import { topicValidationSchema } from "../validationSchema/topicValidation";
-import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
-import {token} from '../jwt_token';
-import {toast} from 'react-toastify'
+import CreateTopicModal from "../modal/CreateTopicModal"; // Import the modal
+import CreateResourceModal from "../modal/CreateResourceModal";
 
 function Header(props) {
   const [showTopicModal, setShowTopicModal] = useState(false);
-
-  const dispatch = useDispatch();
+  const [showResourceModal,setResourceModal] =useState(false);
   const navigate = useNavigate();
-
-  const handleCreateTopic = async (values) => {
-    try {
-      if(token=== null){
-        return  toast.error('Token is null');
-      }
-      await createTopic(values, props.data, dispatch);
-       dispatch(fetchUserSubscriptions(token))
-      setShowTopicModal(false);
-    } catch (error) {
-      Swal.fire("Error", error, "error");
-    }
-  };
 
   return (
     <>
@@ -75,18 +56,19 @@ function Header(props) {
                     onClick={() => setShowTopicModal(true)}
                   />
                 </OverlayTrigger>
-                {/* <CiMail
-                  className="fs-4 text-dark cursor-pointer"
-                  onClick={() => setShowInviteModal(true)}
-                />
-                <FaLink
-                  className="fs-4 text-secondary cursor-pointer"
-                  onClick={() => setShowResourceModal(true)}
-                />
-                <FiFilePlus
-                  className="fs-4 text-secondary cursor-pointer"
-                  onClick={() => setShowDocumentModal(true)}
-                /> */}
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={
+                    <Tooltip id="create-Resource-tooltip">
+                      Create Resource
+                    </Tooltip>
+                  }
+                >
+                  <FaLink
+                    className="fs-4 text-secondary cursor-pointer"
+                    onClick={() => setResourceModal(true)}
+                  />
+                </OverlayTrigger>
                 <div className="dropdown">
                   <button
                     className="btn d-flex align-items-center dropdown-toggle"
@@ -102,18 +84,6 @@ function Header(props) {
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="dropdownMenuButton1"
                   >
-                    <li>
-                      <a className="dropdown-item">Users</a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item">Profile</a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item">Posts</a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item">Topics</a>
-                    </li>
                     <button
                       onClick={() => {
                         handleLogout(navigate);
@@ -128,70 +98,18 @@ function Header(props) {
             )}
           </div>
         </div>
-        <Modal show={showTopicModal} onHide={() => setShowTopicModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Create New Topic</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Formik
-              initialValues={{ name: "", visibility: "public" }}
-              validationSchema={topicValidationSchema}
-              onSubmit={handleCreateTopic}
-            >
-              {({
-                handleSubmit,
-                handleChange,
-                values,
-                errors,
-                touched,
-                isSubmitting,
-              }) => (
-                <Form onSubmit={handleSubmit}>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter Topic Name"
-                    className="mb-3"
-                    name="name"
-                    value={values.name}
-                    onChange={handleChange}
-                    isInvalid={touched.name && errors.name}
-                  />
-                  {errors.name && touched.name && (
-                    <div className="text-danger mb-2">{errors.name}</div>
-                  )}
-                  <Form.Select
-                    name="visibility"
-                    value={values.visibility}
-                    onChange={handleChange}
-                    isInvalid={touched.visibility && errors.visibility}
-                  >
-                    <option value="public">Public</option>
-                    <option value="private">Private</option>
-                  </Form.Select>
-                  {errors.visibility && touched.visibility && (
-                    <div className="text-danger mb-2">{errors.visibility}</div>
-                  )}
-                  <Modal.Footer>
-                    <Button
-                      variant="secondary"
-                      onClick={() => setShowTopicModal(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      disabled={isSubmitting}
-                    >
-                      Save
-                    </Button>
-                  </Modal.Footer>
-                </Form>
-              )}
-            </Formik>
-          </Modal.Body>
-        </Modal>
       </nav>
+
+      <CreateTopicModal
+        show={showTopicModal}
+        setShow={setShowTopicModal}
+        props={props}
+      />
+      <CreateResourceModal
+        show={showResourceModal}
+        setShow={setResourceModal}
+        props={props}
+      />
     </>
   );
 }

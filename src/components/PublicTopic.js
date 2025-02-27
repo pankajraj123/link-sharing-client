@@ -1,4 +1,3 @@
-// src/components/PublicTopic.js
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,10 +6,13 @@ import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
 import {handleUnsubscribe} from  '../utils/subscriptionApi'
 import {handleSubscribe} from  '../utils/subscriptionApi'
 import moment from "moment";
+import { handleClickRead } from "../utils/TopicApi";
+import { useNavigate } from "react-router-dom";
 
 
 const PublicTopic = ({ token, userName }) => {
   const dispatch = useDispatch();
+  const navigate=useNavigate();
   const { publicTopics } = useSelector((state) => state.publicTopics);
   const { subscriptions } = useSelector((state) => state.subscriptions);
   const [selectedSeriousness, setSelectedSeriousness] = useState("Casual");
@@ -55,6 +57,16 @@ useEffect(() => {
                   <strong>Date Created:</strong>{" "}
                   {moment(topic.dateCreated).format("DD/MM/YYYY")}
                 </p>
+                {isSubscribed(topic._id) && (
+                  <button
+                    className="btn-primary"
+                    onClick={() =>
+                      handleClickRead(topic.name, topic._id, navigate)
+                    }
+                  >
+                    Read More
+                  </button>
+                )}
               </Card.Body>
               {topic.userName !== userName && (
                 <div className="d-flex gap-2">

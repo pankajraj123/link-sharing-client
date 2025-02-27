@@ -15,7 +15,7 @@ const Forgot=()=>{
       <h2 className="mb-4">Forgot Password</h2>
       <Formik
         initialValues={{
-          email: "",
+          email:"",
         }}
         validationSchema={validationSchemaForgot}
         onSubmit={(values)=>{handleSubmit(values)}}
