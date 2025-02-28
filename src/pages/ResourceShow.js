@@ -8,7 +8,7 @@ import { Card } from "react-bootstrap";
 function ResourceShow() {
   const dispatch = useDispatch();
   const { topicData } = useSelector((state) => state.topicData);
-
+   console.log(topicData);
   useEffect(() => {
     const storedData = localStorage.getItem("token");
     const topicId = localStorage.getItem("topicId");
@@ -34,21 +34,35 @@ function ResourceShow() {
                     <strong>Description:</strong> {data.description}
                   </p>
                   <p className="card-text">
-                    <strong>Created By:</strong> {data.createdBy}
+                    <strong> Resource CreatedBy:</strong> {data.createdBy}
                   </p>
+                  <p className="card-text">
+                    <strong> Topic CreatedBy:</strong>{" "}
+                    {data.topicCreatedBy}
+                  </p>
+
                   <p className="card-text ">
                     <strong>Date Created:</strong>{" "}
                     {moment(data.date).format("DD/MM/YYYY")}
                   </p>
-                   {/* Link Section */}
-                  {data.Url && (
+                {data.Url && (
                     <p className="card-text ">
                       <strong>Link:</strong>{" "}
-                      <a href={data.Url} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={data.Url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {data.Url}
                       </a>
                     </p>
-                    )}
+                  )}
+                  {data.filePath && (
+                    <p className="card-text ">
+                      <strong>Download Document</strong>
+                      <button className="btn  btn-primary">Download</button>
+                    </p>
+                  )}
                 </Card.Body>
               </Card>
             </div>

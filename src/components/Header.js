@@ -4,9 +4,10 @@ import { TbMessageCircleFilled } from "react-icons/tb";
 import { FaLink } from "react-icons/fa";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { handleLogout } from "../utils/userApi";
+import { handleLogout,handleClickProfile } from "../utils/userApi";
 import CreateTopicModal from "../modal/CreateTopicModal"; // Import the modal
 import CreateResourceModal from "../modal/CreateResourceModal";
+import  {handleClickPost} from '../utils/ResourceApi'
 
 function Header(props) {
   const [showTopicModal, setShowTopicModal] = useState(false);
@@ -81,16 +82,32 @@ function Header(props) {
                     <span className="fw-bold">{props.data}</span>
                   </button>
                   <ul
-                    className="dropdown-menu dropdown-menu-end"
+                    className="dropdown-menu dropdown-menu-end text-center"
                     aria-labelledby="dropdownMenuButton1"
                   >
                     <button
                       onClick={() => {
-                        handleLogout(navigate);
+                        handleClickProfile(navigate);
                       }}
                       className="border border-white"
                     >
-                      <li className="dropdown-item">LogOut</li>
+                      <li className="dropdown-item">Profile</li>
+                    </button>{" "}
+                    <button
+                      onClick={() => {
+                        handleClickPost(navigate);
+                      }}
+                      className="border border-white"
+                    >
+                      <li className="dropdown-item">Post</li>
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLogout(navigate);
+                      }}
+                      className="  border border-white "
+                    >
+                      <li className="dropdown-item ">LogOut</li>
                     </button>
                   </ul>
                 </div>

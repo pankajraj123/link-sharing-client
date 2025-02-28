@@ -15,7 +15,7 @@ function Login() {
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={validationSchemaLogin}
-          onSubmit={(values) => handleLogin(values, navigate)} // Using handleLogin from utils
+          onSubmit={(values) => handleLogin(values, navigate)} 
         >
           {({ values }) => (
             <Form>
@@ -63,7 +63,7 @@ function Login() {
                   className="btn btn-primary"
                   onClick={() => {
                     handleForgot(navigate);
-                  }} // Handling forgot password logic here
+                  }} 
                 >
                   Forgot password
                 </button>

@@ -9,7 +9,6 @@ import moment from "moment";
 import { handleClickRead } from "../utils/TopicApi";
 import { useNavigate } from "react-router-dom";
 
-
 const PublicTopic = ({ token, userName }) => {
   const dispatch = useDispatch();
   const navigate=useNavigate();
@@ -25,7 +24,7 @@ useEffect(() => {
 }, [token, dispatch]);
 
   const isSubscribed = (topicId) =>{
-  return subscriptions.some((sub) =>(sub.topicId._id=== topicId))
+  return subscriptions?.some((sub) =>(sub.topicId._id=== topicId))
   };
 
   const getSubscriptionData = (topicId) =>{

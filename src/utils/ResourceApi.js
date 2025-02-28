@@ -10,7 +10,7 @@
       `create-resource/${topicId}`,
       {
         description:description,
-        Url:Url
+        Url:Url,
       },
       {
         headers: {
@@ -24,4 +24,8 @@ catch(error){
 console.log(error);
  toast.error(CREATE_RESOURCE_FAILURE);
 }
+}
+
+export const handleClickPost=async(navigate)=>{
+  navigate('/dashboard/post')
 }
