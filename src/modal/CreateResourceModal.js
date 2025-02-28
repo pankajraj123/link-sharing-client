@@ -2,31 +2,44 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { Formik } from "formik";
 import { createResource } from "../utils/ResourceApi";
-import { fetchPublicTopic } from "../redux/actions/publicTopicActions";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { token } from "../jwt_token";
-import {validationResourceSchema} from "../validationSchema/resourceValidation";
+import { fetchUserSubscriptions } from "../redux/actions/subscriptionActions";
+import { validationResourceSchema } from "../validationSchema/resourceValidation";
 
 const CreateResourceModal = ({ show, setShow }) => {
   const dispatch = useDispatch();
-  const { publicTopics } = useSelector((state) => state.publicTopics);
+  const { subscriptions } = useSelector((state) => state.subscriptions);
   const [selectedTopic, setSelectedTopic] = useState(null);
+  const user = localStorage.getItem("token");
+  const parsedUser = user ? JSON.parse(user) : null;
+  const token = parsedUser?.token;
 
   useEffect(() => {
     if (show) {
-      dispatch(fetchPublicTopic(token));
+      dispatch(fetchUserSubscriptions(token));
     }
-  }, [show, dispatch]);
+  }, [show, dispatch, token]);
 
   const handleCreateResource = async (values, { setSubmitting }) => {
     try {
       if (token === null) {
         return toast.error("Token is null");
       }
+
       if (!selectedTopic) {
-        return toast.error("Please select a topic");
+        return toast.error("Please select a topic from your subscriptions");
+      }
+
+      const isSubscribed = subscriptions.some(
+        (subscription) => subscription.topicId._id === selectedTopic._id
+      );
+
+      if (!isSubscribed) {
+        return toast.error(
+          "You can only create resources for subscribed topics"
+        );
       }
 
       await createResource(
@@ -35,7 +48,7 @@ const CreateResourceModal = ({ show, setShow }) => {
         token,
         values.Url
       );
-      setShow(false); 
+      setShow(false);
     } catch (error) {
       Swal.fire({
         title: "Error",
@@ -43,7 +56,7 @@ const CreateResourceModal = ({ show, setShow }) => {
         icon: "error",
       });
     } finally {
-      setSubmitting(false); 
+      setSubmitting(false);
     }
   };
 
@@ -78,20 +91,24 @@ const CreateResourceModal = ({ show, setShow }) => {
                 <Form.Control
                   as="select"
                   id="topic"
-                  onChange={(e) =>
-                    setSelectedTopic(
-                      publicTopics.find((topic) => topic._id === e.target.value)
-                    )
-                  }
+                  onChange={(e) => {
+                    const selected = subscriptions.find(
+                      (topic) => topic.topicId._id === e.target.value
+                    );
+                    setSelectedTopic(selected ? selected.topicId : null);
+                  }}
+                  value={selectedTopic ? selectedTopic._id : ""}
                 >
                   <option value="">Select a topic</option>
-                  {publicTopics.map((topic) => (
-                    <option key={topic._id} value={topic._id}>
-                      {topic.name}
+                  {subscriptions.map((topic) => (
+                    <option key={topic.topicId._id} value={topic.topicId._id}>
+                      {topic.topicId.name}
                     </option>
                   ))}
                 </Form.Control>
               </div>
+
+              {/* Resource Description */}
               <div className="mb-3">
                 <label htmlFor="description" className="form-label">
                   Resource Description
@@ -109,6 +126,7 @@ const CreateResourceModal = ({ show, setShow }) => {
                   <div className="text-danger">{errors.description}</div>
                 )}
               </div>
+
               <div className="mb-3">
                 <label htmlFor="Url" className="form-label">
                   Resource URL (optional)

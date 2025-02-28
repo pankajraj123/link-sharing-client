@@ -170,3 +170,24 @@ export const handleLogout = async (navigate) => {
 export const handleCancelReset = (navigate) => {
   navigate("/");
 };
+
+export const handleClickProfile=async(navigate)=>{
+   navigate("/dashboard/profile");
+}
+
+export const handleGetUserDetail= async(token)=>{
+  try {
+    const response = await axiosInstance.get("get-user-detail", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    return null;
+  }
+}

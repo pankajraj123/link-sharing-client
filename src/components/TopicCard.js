@@ -15,7 +15,6 @@ const TopicCard = ({ token, userName }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { topics, loading, error } = useSelector((state) => state.topic);
-  console.log(topics);
 
   const handleEdit = (topic) => {
     setSelectedTopic(topic);
