@@ -10,20 +10,21 @@ import { toast } from "react-toastify";
 import { token } from "../jwt_token";
 import { useDispatch } from "react-redux";
 
+
 const CreateTopicModal = ({ show, setShow, props }) => {
-const dispatch = useDispatch();
-const handleCreateTopic = async (values) => {
-    try {
-      if (token === null) {
+  const dispatch = useDispatch();
+  const handleCreateTopic = async (values) =>{
+    try{
+      if(token === null){
         return toast.error("Token is null");
       }
-      await createTopic(values, props.data,dispatch);
+      await createTopic(values, props.data, dispatch);
       dispatch(fetchUserSubscriptions(token));
       setShow(false);
     } catch (error) {
       Swal.fire({
         title: "Error",
-        html: error, 
+        html: error,
         icon: "error",
       });
     }

@@ -31,9 +31,9 @@ function Dashboard(){
       <div ClassName='container'>
         <div className='row'>
           <div className='col mx-4 mt-4'>
-            <h1>User</h1>
-            <UserCard/>
-            <PublicTopic token={token} userName={userName}/>
+            <h1 className='ms-4'>User</h1>
+            <UserCard />
+            <PublicTopic  token={token} userName={userName}/>
           </div>
           <div className=' col-6 mt-4'>
             <h1> Your Topic</h1>

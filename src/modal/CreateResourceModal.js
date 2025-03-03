@@ -83,7 +83,6 @@ const CreateResourceModal = ({ show, setShow }) => {
             isValid,
           }) => (
             <Form onSubmit={handleSubmit}>
-              {/* Topic selection */}
               <div className="mb-3">
                 <label htmlFor="topic" className="form-label">
                   Select Topic
@@ -108,7 +107,6 @@ const CreateResourceModal = ({ show, setShow }) => {
                 </Form.Control>
               </div>
 
-              {/* Resource Description */}
               <div className="mb-3">
                 <label htmlFor="description" className="form-label">
                   Resource Description

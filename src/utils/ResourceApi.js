@@ -21,7 +21,6 @@
  toast.success(CREATE_RESOURCE);
 }
 catch(error){
-console.log(error);
  toast.error(CREATE_RESOURCE_FAILURE);
 }
 }
