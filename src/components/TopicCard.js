@@ -1,5 +1,3 @@
-// src/components/TopicCard.js
-
 import React, { useState, useEffect } from "react";
 import { Card} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,14 +7,17 @@ import { HandleDelete } from "../utils/TopicApi";
 import { handleClickRead } from "../utils/TopicApi";
 import moment from "moment";
 import EditTopicModal from "../modal/EditTopicModal"; 
+import { Pagination } from "react-bootstrap";
 
 const TopicCard = ({ token, userName }) => {
   const [selectedTopic, setSelectedTopic] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { topics, loading, error } = useSelector((state) => state.topic);
+  const [currentPage, setCurrentPage] = useState(1);
+  const topicsPerPage = 5;
 
-  const handleEdit = (topic) => {
+  const handleEdit=(topic)=>{
     setSelectedTopic(topic);
   };
 
@@ -37,12 +38,21 @@ const TopicCard = ({ token, userName }) => {
   if (error) {
     return <p>Error: {error}</p>;
   }
+  
+   const indexOfLastTopic = currentPage * topicsPerPage;
+   const indexOfFirstTopic = indexOfLastTopic - topicsPerPage;
+   const currentTopics = topics.slice(indexOfFirstTopic, indexOfLastTopic);
 
+   const handlePageChange = (pageNumber) => {
+     setCurrentPage(pageNumber);
+   };
+
+   const totalPages = Math.ceil(topics.length / topicsPerPage);
   return (
     <>
       <div>
-        {topics.length > 0 ? (
-          topics.map((topic, index) => (
+        {currentTopics.length > 0 ? (
+          currentTopics.map((topic, index) => (
             <Card key={index} className="shadow-sm p-3 mb-3 rounded topic-card">
               <Card.Body>
                 <h6>{topic.name}</h6>
@@ -58,7 +68,7 @@ const TopicCard = ({ token, userName }) => {
                 </p>
               </Card.Body>
               <div className="d-flex">
-                <div className="d-flex gap-3">
+                <div className="d-flex gap-3 ms-3">
                   <button
                     className="btn-primary"
                     onClick={() => handleEdit(topic)}
@@ -88,11 +98,34 @@ const TopicCard = ({ token, userName }) => {
         ) : (
           <p>No topics found.</p>
         )}
+        {totalPages > 1 && (
+          <Pagination className="ms-4 mt -3">
+            <Pagination.Prev
+              onClick={() =>
+                currentPage > 1 && handlePageChange(currentPage - 1)
+              }
+            />
+            {[...Array(totalPages)].map((_, index) => (
+              <Pagination.Item
+                key={index + 1}
+                active={index + 1 === currentPage}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next
+              onClick={() =>
+                currentPage < totalPages && handlePageChange(currentPage + 1)
+              }
+            />
+          </Pagination>
+        )}
       </div>
 
       {selectedTopic && (
         <EditTopicModal
-          show={!!selectedTopic} 
+          show={!!selectedTopic}
           handleClose={handleCloseModal}
           selectedTopic={selectedTopic}
           token={token}

@@ -5,7 +5,7 @@ import { FaLink } from "react-icons/fa";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { handleLogout,handleClickProfile } from "../utils/userApi";
-import CreateTopicModal from "../modal/CreateTopicModal"; // Import the modal
+import CreateTopicModal from "../modal/CreateTopicModal"; 
 import CreateResourceModal from "../modal/CreateResourceModal";
 import  {handleClickPost} from '../utils/ResourceApi'
 
@@ -30,7 +30,6 @@ function Header(props) {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <form className="d-flex ms-auto">
               <input
@@ -43,7 +42,6 @@ function Header(props) {
                 Search
               </button>
             </form>
-
             {props.show && (
               <div className="d-flex align-items-center gap-3 ms-3">
                 <OverlayTrigger
@@ -67,7 +65,7 @@ function Header(props) {
                 >
                   <FaLink
                     className="fs-4 text-secondary cursor-pointer"
-                    onClick={() => setResourceModal(true)}
+                    onClick={()=>setResourceModal(true)}
                   />
                 </OverlayTrigger>
                 <div className="dropdown">
@@ -86,7 +84,7 @@ function Header(props) {
                     aria-labelledby="dropdownMenuButton1"
                   >
                     <button
-                      onClick={() => {
+                      onClick={()=>{
                         handleClickProfile(navigate);
                       }}
                       className="border border-white"

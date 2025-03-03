@@ -21,6 +21,13 @@ import {
   RESET_PASSWORD_AUTHENTICATION_FAILURE,
   RESET_PASSWORD_FAILURE
 } from "../constants/ResetPassword.constant";
+import {
+  EDIT_PROFILE_MISSING_FIELDS,
+  EDIT_PROFILE_CONFLICT_,
+  EDIT_PROFILE_NOT_EXIST,EDIT_PROFILE_FAILURE,
+  EDIT_PROFILE_SUCCESS,
+} from "../constants/EditProfile.constant";
+
 
 export const resetPassword = async (token, newPassword) => {
   try {
@@ -191,3 +198,60 @@ export const handleGetUserDetail= async(token)=>{
     return null;
   }
 }
+
+
+
+export const handleUpdateUserDetails = async (updatedUserData) => {
+  try {
+    const user = localStorage.getItem("token");
+    const parsedUser = user ? JSON.parse(user) : null;
+    const token = parsedUser?.token;
+    if (!token) {
+      throw new Error("No token found");
+    }
+    const response = await axiosInstance.put(
+      "/edit-user-detail", 
+      updatedUserData, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+    if (response.status === 200) {
+      const data = response.data;
+      const items = {
+        userId: data.user._id,
+        userName: data.user.userName,
+        token: data.token,
+      }
+      localStorage.setItem("token", JSON.stringify(items));
+     Swal.fire({
+       icon: "success",
+       text:EDIT_PROFILE_SUCCESS,
+     });
+    } 
+  } catch (error) {
+    if(error.response.status === 400){
+       Swal.fire({
+         icon: "error",
+         text: EDIT_PROFILE_MISSING_FIELDS,
+       });
+    }else if (error.response.status === 409) {
+      Swal.fire({
+        icon: "error",
+        text: EDIT_PROFILE_CONFLICT_,
+      });
+    } else if (error.response.status === 404) {
+      Swal.fire({
+        icon: "error",
+        text: EDIT_PROFILE_NOT_EXIST,
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        text: EDIT_PROFILE_FAILURE,
+      });
+    }
+  }
+};

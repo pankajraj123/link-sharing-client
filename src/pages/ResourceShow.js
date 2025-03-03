@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchTopicDescription } from "../redux/actions/resourceTopicActions";
 import moment from "moment";
 import { Card } from "react-bootstrap"; 
-
+import Header from "../components/Header";
 
 function ResourceShow() {
   const dispatch = useDispatch();
+ const  isShow=true;
   const { topicData } = useSelector((state) => state.topicData);
    console.log(topicData);
   useEffect(() => {
@@ -21,8 +22,9 @@ function ResourceShow() {
   }, [dispatch]);
 
   return (
-    <div className="container mt-5">
-      <h1 className="mb-4 text-center">Topic Resources</h1>
+    <div className="container-fluid mt-2">
+      <Header show={isShow} />
+      <h1 className="mb-4 text-center mt-4">Topic Resources</h1>
       {topicData && topicData.length > 0 ? (
         <div className="d-flex justify-content-center align-items-center flex-column">
           {topicData.map((data, index) => (
@@ -37,15 +39,13 @@ function ResourceShow() {
                     <strong> Resource CreatedBy:</strong> {data.createdBy}
                   </p>
                   <p className="card-text">
-                    <strong> Topic CreatedBy:</strong>{" "}
-                    {data.topicCreatedBy}
+                    <strong> Topic CreatedBy:</strong> {data.topicCreatedBy}
                   </p>
-
                   <p className="card-text ">
                     <strong>Date Created:</strong>{" "}
                     {moment(data.date).format("DD/MM/YYYY")}
                   </p>
-                {data.Url && (
+                  {data.Url && (
                     <p className="card-text ">
                       <strong>Link:</strong>{" "}
                       <a
@@ -53,7 +53,7 @@ function ResourceShow() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {data.Url}
+                      {data.Url}
                       </a>
                     </p>
                   )}

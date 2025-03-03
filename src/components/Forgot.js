@@ -2,10 +2,10 @@ import React from "react";
 import { Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
-import { handleForgotPassword } from "../utils/userApi"; 
-import {validationSchemaForgot} from '../validationSchema/userValidation'
+import { handleForgotPassword } from "../utils/userApi";
+import { validationSchemaForgot } from "../validationSchema/userValidation";
 
-const Forgot=()=>{
+const Forgot = () => {
   const navigate = useNavigate();
   const handleSubmit = async (values) => {
     await handleForgotPassword(values.email, navigate);
@@ -15,10 +15,12 @@ const Forgot=()=>{
       <h2 className="mb-4">Forgot Password</h2>
       <Formik
         initialValues={{
-          email:"",
+          email: "",
         }}
         validationSchema={validationSchemaForgot}
-        onSubmit={(values)=>{handleSubmit(values)}}
+        onSubmit={(values) => {
+          handleSubmit(values);
+        }}
       >
         <FormikForm>
           <div className="mb-3">
@@ -42,10 +44,7 @@ const Forgot=()=>{
             <Button variant="primary" type="submit">
               Send Mail
             </Button>
-            <Button
-              variant="secondary"
-              onClick={() => navigate("/")}
-            >
+            <Button variant="secondary" onClick={() => navigate("/")}>
               Cancel
             </Button>
           </div>
